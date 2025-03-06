@@ -61,7 +61,7 @@ class SupplierController extends Controller
     {
         return view('pages.admin.supplier.show', [
             'data' => $supplier
-          ]);
+        ]);
     }
 
     /**
@@ -74,7 +74,7 @@ class SupplierController extends Controller
     {
         return view('pages.admin.supplier.edit', [
             'data' => $supplier
-          ]);
+        ]);
     }
 
     /**

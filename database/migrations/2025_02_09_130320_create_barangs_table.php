@@ -15,9 +15,10 @@ class CreateBarangsTable extends Migration
     {
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_barang', 20);
-            $table->string('nama_barang', 200);
+            $table->string('kode', 20);
+            $table->string('nama', 200);
             $table->enum('satuan', ['pcs', 'kg', 'liter']);
+            $table->integer('stock');
             $table->integer('harga_beli');
             $table->integer('harga_jual');
             $table->foreignId('kategoris_id')->constrained('kategoris');

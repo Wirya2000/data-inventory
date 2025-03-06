@@ -17,7 +17,7 @@ class CreateBarangHasPembeliansTable extends Migration
             $table->foreignId('barangs_id')->constrained('barangs');
             $table->foreignId('pembelian_id')->constrained('pembelians');
             $table->integer('jumlah');
-            $table->integer('harga_beli');
+            $table->integer('harga_satuan');
             $table->foreignId('suppliers_id')->constrained('suppliers');
             $table->foreignId('users_id')->constrained('users');
             $table->timestamps();
