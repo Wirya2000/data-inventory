@@ -20,18 +20,16 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Barang</label>
+                                        <label for="example-text-input" class="form-control-label">Kategori</label>
                                         @error('kategori')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="kategori" placeholder="Kategori" {{ old('kategori') }}> --}}
                                         <select class="form-select" name="kategori">
-                                            @foreach ($kategories as $kategori)
-                                            @if (old('satuan') == "pc")
+                                            @foreach ($kategoris as $kategori)
+                                            @if (old('kategori_id') == $kategori->id)
                                                 <option value="{{ $kategori->id }}" selected>{{ $kategori->nama }}</option>
-                                            @elseif (old('kategori_id') == "pak")
-                                                <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
-                                            @elseif (old('kategori_id') == "slop")
+                                            @else
                                                 <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
                                             @endif
                                             @endforeach
@@ -63,14 +61,24 @@
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="satuan" placeholder="Satuan" value="{{ old('satuan') }}"> --}}
-                                        <select class="form-select" name="kategori">
-                                            @foreach ($kategories as $kategori)
-                                            @if (old('kategori_id') == $kategori->id)
-                                                <option value="{{ $kategori->id }}" selected>{{ $kategori->nama }}</option>
+                                        <select class="form-select" name="satuan">
+                                            @if (old('satuan') == "pc")
+                                                <option value="pc" selected>pc</option>
+                                                <option value="pak">pak</option>
+                                                <option value="slop">slop</option>
+                                            @elseif (old('satuan') == "pak")
+                                                <option value="pc">pc</option>
+                                                <option value="pak" selected>pak</option>
+                                                <option value="slop">slop</option>
+                                            @elseif (old('satuan') == "slop")
+                                                <option value="pc">pc</option>
+                                                <option value="pak">pak</option>
+                                                <option value="slop" selected>slop</option>
                                             @else
-                                                <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
+                                                <option value="pc">pc</option>
+                                                <option value="pak">pak</option>
+                                                <option value="slop">slop</option>
                                             @endif
-                                            @endforeach
                                         </select>
                                     </div>
                                 </div>

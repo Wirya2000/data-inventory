@@ -21,10 +21,10 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Kategori</label>
+                                        <label for="example-text-input" class="form-control-label">Barang</label>
                                         {{-- <input class="form-control @error('kategori') is-invalid @enderror" id="kategori" name="kategori" type="text" placeholder="Kategori" required autofocus value="{{ old('kategori', $data->kategori->nama) }}" > --}}
                                         <select class="form-select" name="kategori">
-                                            @foreach ($kategoris as $kategori)
+                                            @foreach ($kategories as $kategori)
                                             @if (old('kategori_id', $post->kategori_id) == $kategori->id)
                                                 <option value="{{ $kategori->id }}" selected>{{ $kategori->nama }}</option>
                                             @else

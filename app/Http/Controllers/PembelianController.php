@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
+use App\Models\Kategori;
 use App\Models\Pembelian;
+use App\Models\Supplier;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PembelianController extends Controller
@@ -14,7 +18,9 @@ class PembelianController extends Controller
      */
     public function index()
     {
-        //
+        return view('pages.admin.pembelian.index', [
+            "datas" => Pembelian::all()
+        ]);
     }
 
     /**
@@ -24,7 +30,12 @@ class PembelianController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.admin.pembelian.create', [
+            'kategoris' => Kategori::all(),
+            'barangs' => Barang::all(),
+            'users' => User::all(),
+            'suppliers' => Supplier::all()
+        ]);
     }
 
     /**
@@ -35,7 +46,13 @@ class PembelianController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'tanggal_beli' => 'required|max:255'
+          ]);
+
+          Pembelian::create($validatedData);
+
+          return redirect('/pembelians')->with('success', 'New Pembelian has been added!');
     }
 
     /**
@@ -46,7 +63,9 @@ class PembelianController extends Controller
      */
     public function show(Pembelian $pembelian)
     {
-        //
+        return view('pages.admin.pembelian.show', [
+            'data' => $pembelian
+        ]);
     }
 
     /**
@@ -57,7 +76,9 @@ class PembelianController extends Controller
      */
     public function edit(Pembelian $pembelian)
     {
-        //
+        return view('pages.admin.barang.edit', [
+            'data' => $pembelian
+        ]);
     }
 
     /**
@@ -69,7 +90,16 @@ class PembelianController extends Controller
      */
     public function update(Request $request, Pembelian $pembelian)
     {
-        //
+        $rules = ([
+            'tanggal_beli' => 'required|max:255'
+          ]);
+
+          $validatedData = $request->validate($rules);
+
+          Pembelian::where('id', $pembelian->id)
+              ->update($validatedData);
+
+          return redirect('/pembelians')->with('success', 'Pembelian has been updated!');
     }
 
     /**
@@ -80,6 +110,21 @@ class PembelianController extends Controller
      */
     public function destroy(Pembelian $pembelian)
     {
-        //
+        Pembelian::destroy($pembelian->id);
+
+        return redirect('/pembelians')->with('success', 'Pembelian has been deleted!');
+    }
+
+
+    public function showAddDetailPembelian(Request $request) {
+        // $this->authorize('customer-permission');
+
+        $id = $request->get('id');
+        // $data = Pembelian::find($id);
+        $barangs = Barang::all();
+
+        return response()->json(array(
+            'msg' => view('pages.admin.pembelian.showAddDetailPembelian', compact('barangs'))->render()
+        ), 200);
     }
 }

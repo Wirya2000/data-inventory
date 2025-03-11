@@ -14,7 +14,9 @@ class BarangController extends Controller
      */
     public function index()
     {
-        //
+        return view('pages.admin.barang.index', [
+            "datas" => Barang::all()
+        ]);
     }
 
     /**
@@ -24,7 +26,9 @@ class BarangController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.admin.barang.create', [
+            // 'categories' => Category::all()
+        ]);
     }
 
     /**
@@ -35,7 +39,18 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'kode' => 'required|max:255',
+            'nama' => 'required|max:255',
+            'satuan' => 'required|max:255',
+            'stock' => 'required|max:255',
+            'harga_beli' => 'required|max:255',
+            'harga_jual' => 'required|max:255'
+          ]);
+
+          Barang::create($validatedData);
+
+          return redirect('/barangs')->with('success', 'New Barang has been added!');
     }
 
     /**
@@ -46,7 +61,9 @@ class BarangController extends Controller
      */
     public function show(Barang $barang)
     {
-        //
+        return view('pages.admin.barangs.show', [
+            'data' => $barang
+        ]);
     }
 
     /**
@@ -57,7 +74,9 @@ class BarangController extends Controller
      */
     public function edit(Barang $barang)
     {
-        //
+        return view('pages.admin.barang.edit', [
+            'data' => $barang
+        ]);
     }
 
     /**
@@ -69,7 +88,20 @@ class BarangController extends Controller
      */
     public function update(Request $request, Barang $barang)
     {
-        //
+        $rules = ([
+            'nama' => 'required|max:255',
+            'satuan' => 'required|max:255',
+            'stock' => 'required|max:255',
+            'harga_beli' => 'required|max:255',
+            'harga_jual' => 'required|max:255'
+          ]);
+
+          $validatedData = $request->validate($rules);
+
+          Barang::where('id', $barang->id)
+              ->update($validatedData);
+
+          return redirect('/barangs')->with('success', 'Barang has been updated!');
     }
 
     /**
@@ -80,6 +112,8 @@ class BarangController extends Controller
      */
     public function destroy(Barang $barang)
     {
-        //
+        Barang::destroy($barang->id);
+
+        return redirect('/barangs')->with('success', 'Barang has been deleted!');
     }
 }

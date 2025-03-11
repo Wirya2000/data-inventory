@@ -39,6 +39,318 @@
                 </ul>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="#supplierSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Suppliers</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('suppliers.*') ? 'show' : '' }}" id="supplierSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'suppliers.index' ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
+                            List Supplier
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'suppliers.create' ? 'active' : '' }}" href="{{ route('suppliers.create') }}">
+                            Add Supplier
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="#supplierSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Supplier</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('kategoris.*') ? 'show' : '' }}" id="supplierSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'kategoris.index' ? 'active' : '' }}" href="{{ route('kategoris.index') }}">
+                            List Supplier
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'kategoris.create' ? 'active' : '' }}" href="{{ route('kategoris.create') }}">
+                            Add Supplier
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="#kategorisSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Kategoris</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('kategoris.*') ? 'show' : '' }}" id="kategorisSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'kategoris.index' ? 'active' : '' }}" href="{{ route('kategoris.index') }}">
+                            List Kategoris
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'kategoris.create' ? 'active' : '' }}" href="{{ route('kategoris.create') }}">
+                            Add Kategoris
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('barangs.*') ? 'active' : '' }}" href="#barangSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Barang</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('barangs.*') ? 'show' : '' }}" id="barangSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'barangs.index' ? 'active' : '' }}" href="{{ route('barangs.index') }}">
+                            List Barang
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'barangs.create' ? 'active' : '' }}" href="{{ route('barangs.create') }}">
+                            Add Barang
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('pembelians.*') ? 'active' : '' }}" href="#pembelianSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Pembelian</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('pembelians.*') ? 'show' : '' }}" id="pembelianSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'pembelians.index' ? 'active' : '' }}" href="{{ route('pembelians.index') }}">
+                            List Pembelian
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'pembelians.create' ? 'active' : '' }}" href="{{ route('pembelians.create') }}">
+                            Add Pembelian
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('penjualans.*') ? 'active' : '' }}" href="#penjualanSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Penjualan</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('penjualans.*') ? 'show' : '' }}" id="penjualanSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'penjualans.index' ? 'active' : '' }}" href="{{ route('penjualans.index') }}">
+                            List Penjualan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'penjualans.create' ? 'active' : '' }}" href="{{ route('penjualans.create') }}">
+                            Add Penjualan
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Customer</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('customers.*') ? 'show' : '' }}" id="customerSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.index' ? 'active' : '' }}" href="{{ route('customers.index') }}">
+                            List Customer
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.create' ? 'active' : '' }}" href="{{ route('customers.create') }}">
+                            Add Customer
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Customer</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('customers.*') ? 'show' : '' }}" id="customerSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.index' ? 'active' : '' }}" href="{{ route('customers.index') }}">
+                            List Customer
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.create' ? 'active' : '' }}" href="{{ route('customers.create') }}">
+                            Add Customer
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Customer</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('customers.*') ? 'show' : '' }}" id="customerSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.index' ? 'active' : '' }}" href="{{ route('customers.index') }}">
+                            List Customer
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.create' ? 'active' : '' }}" href="{{ route('customers.create') }}">
+                            Add Customer
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Customer</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('customers.*') ? 'show' : '' }}" id="customerSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.index' ? 'active' : '' }}" href="{{ route('customers.index') }}">
+                            List Customer
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.create' ? 'active' : '' }}" href="{{ route('customers.create') }}">
+                            Add Customer
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Customer</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('customers.*') ? 'show' : '' }}" id="customerSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.index' ? 'active' : '' }}" href="{{ route('customers.index') }}">
+                            List Customer
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.create' ? 'active' : '' }}" href="{{ route('customers.create') }}">
+                            Add Customer
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Customer</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('customers.*') ? 'show' : '' }}" id="customerSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.index' ? 'active' : '' }}" href="{{ route('customers.index') }}">
+                            List Customer
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'customers.create' ? 'active' : '' }}" href="{{ route('customers.create') }}">
+                            Add Customer
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ str_contains(request()->url(), 'user-management') == true ? 'active' : '' }}" href="{{ route('page', ['page' => 'user-management']) }}">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>

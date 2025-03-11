@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BarangController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,6 +15,10 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\PenjualanController;
+use App\Http\Controllers\SupplierController;
 
 Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 	Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
@@ -36,10 +41,14 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static');
 	Route::get('/sign-in-static', [PageController::class, 'signin'])->name('sign-in-static');
 	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static');
+    // Route::post('pembelians/showAddDetailPembelian/', 'PembelianController@showAddDetailPembelian')->name('pembelians.showAddDetailPembelian');
+    Route::post('pembelians/showAddDetailPembelian/', [PembelianController::class, 'showAddDetailPembelian'])->name('pembelians.showAddDetailPembelian');
     Route::resource('customers', CustomerController::class);
+    Route::resource('suppliers', SupplierController::class);
+    Route::resource('kategoris', KategoriController::class);
+    Route::resource('barangs', BarangController::class);
+    Route::resource('pembelians', PembelianController::class);
+    Route::resource('penjualans', PenjualanController::class);
 	Route::get('/{page}', [PageController::class, 'index'])->name('page');
 	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-
-
-
 });

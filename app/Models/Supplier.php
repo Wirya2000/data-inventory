@@ -9,7 +9,7 @@ class Supplier extends Model
 {
     use HasFactory;
     protected $table = 'suppliers';
-    protected $primaryKey = 'idsuppliers';
+    protected $primaryKey = 'id';
     protected $fillable = ['nama', 'alamat', 'no_telp', 'note'];
 
     public function pembelian() {
