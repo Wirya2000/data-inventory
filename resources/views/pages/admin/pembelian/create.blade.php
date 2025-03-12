@@ -25,7 +25,7 @@
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="tanggal_beli" placeholder="tanggal_beli" {{ old('tanggal_beli') }}> --}}
-                                        <input type="date" id="tanggal_beli" name="tanggal_beli">
+                                        <input type="date" id="tanggal_beli" name="tanggal_beli" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-8">

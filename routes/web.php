@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static');
     // Route::post('pembelians/showAddDetailPembelian/', 'PembelianController@showAddDetailPembelian')->name('pembelians.showAddDetailPembelian');
     Route::post('pembelians/showAddDetailPembelian/', [PembelianController::class, 'showAddDetailPembelian'])->name('pembelians.showAddDetailPembelian');
+    Route::post('pembelians/addDetailPembelian/', [PembelianController::class, 'addDetailPembelian'])->name('pembelians.addDetailPembelian');
     Route::resource('customers', CustomerController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('kategoris', KategoriController::class);

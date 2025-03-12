@@ -127,4 +127,49 @@ class PembelianController extends Controller
             'msg' => view('pages.admin.pembelian.showAddDetailPembelian', compact('barangs'))->render()
         ), 200);
     }
+
+    public function addToCart($id) {
+        // $this->authorize('customer-permission');
+
+        $barang = Barang::find($id);
+        $cart = session()->get('cart');
+
+        if(!isset($cart[$id])) {
+            $cart[$id]=[
+            "name" => $barang->nama,
+            "quantity" => 1,
+            "price" => $barang->harga_jual,
+            ];
+        } else {
+            $cart[$id]['quantity']++;
+        }
+        session()->put('cart', $cart);
+
+        return redirect()->back()->with('status', 'Barang added to cart successfully!');
+    }
+    public function removeFromCart(Request $request) {
+        // $this->authorize('customer-permission');
+
+        $cart = session()->get('cart');
+
+        if(isset($cart[$request->get('id')])) {
+            session()->forget('cart.' . $request->get('id'));
+        } else {
+            return response()->json(array(
+                'status'=>400,
+                'msg' => "Failed to remove barang from cart!"
+            ), 400);
+        }
+
+        return response()->json(array(
+            'status'=>200,
+            'msg' => "Barang removed from cart successfully!"
+        ), 200);
+    }
+
+    public function cart() {
+        // $this->authorize('customer-permission');
+
+        return view('customer.cart');
+    }
 }

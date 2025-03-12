@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
@@ -27,7 +28,7 @@ class BarangController extends Controller
     public function create()
     {
         return view('pages.admin.barang.create', [
-            // 'categories' => Category::all()
+            'kategoris' => Kategori::all()
         ]);
     }
 
@@ -40,13 +41,15 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'kode' => 'required|max:255',
+            'kode' => 'required|max:20',
             'nama' => 'required|max:255',
             'satuan' => 'required|max:255',
-            'stock' => 'required|max:255',
-            'harga_beli' => 'required|max:255',
-            'harga_jual' => 'required|max:255'
+            'harga_beli' => 'required',
+            'harga_jual' => 'required',
+            'kategoris_id' => 'required',
           ]);
+
+          $validatedData['stock'] = 0;
 
           Barang::create($validatedData);
 
@@ -75,6 +78,7 @@ class BarangController extends Controller
     public function edit(Barang $barang)
     {
         return view('pages.admin.barang.edit', [
+            'kategoris' => Kategori::all(),
             'data' => $barang
         ]);
     }
@@ -91,17 +95,17 @@ class BarangController extends Controller
         $rules = ([
             'nama' => 'required|max:255',
             'satuan' => 'required|max:255',
-            'stock' => 'required|max:255',
+            // 'stock' => 'required|max:255',
             'harga_beli' => 'required|max:255',
             'harga_jual' => 'required|max:255'
-          ]);
+        ]);
 
-          $validatedData = $request->validate($rules);
+        $validatedData = $request->validate($rules);
 
-          Barang::where('id', $barang->id)
-              ->update($validatedData);
+        Barang::where('id', $barang->id)
+            ->update($validatedData);
 
-          return redirect('/barangs')->with('success', 'Barang has been updated!');
+        return redirect('/barangs')->with('success', 'Barang has been updated!');
     }
 
     /**

@@ -32,7 +32,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button href="{{ route('kategoris.create') }}" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form>

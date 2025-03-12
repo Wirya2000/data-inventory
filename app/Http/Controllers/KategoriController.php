@@ -85,10 +85,8 @@ class KategoriController extends Controller
     public function update(Request $request, Kategori $kategori)
     {
         $rules = ([
+            'kode' => 'required|max:255',
             'nama' => 'required|max:255',
-            'alamat' => 'required|max:255',
-            'no_telp' => 'required|max:255',
-            'note' => 'required|max:255',
           ]);
 
           $validatedData = $request->validate($rules);

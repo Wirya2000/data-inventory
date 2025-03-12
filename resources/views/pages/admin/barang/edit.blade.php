@@ -25,7 +25,7 @@
                                         {{-- <input class="form-control @error('kategori') is-invalid @enderror" id="kategori" name="kategori" type="text" placeholder="Kategori" required autofocus value="{{ old('kategori', $data->kategori->nama) }}" > --}}
                                         <select class="form-select" name="kategori">
                                             @foreach ($kategoris as $kategori)
-                                            @if (old('kategori_id', $post->kategori_id) == $kategori->id)
+                                            @if (old('kategori_id', $kategori->kategori_id) == $kategori->id)
                                                 <option value="{{ $kategori->id }}" selected>{{ $kategori->nama }}</option>
                                             @else
                                                 <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
@@ -51,20 +51,20 @@
                                         <label for="example-text-input" class="form-control-label">Satuan</label>
                                         {{-- <input class="form-control @error('satuan') is-invalid @enderror" id="satuan" name="satuan" type="text" placeholder="Satuan" required autofocus value="{{ old('satuan', $data->satuan) }}" > --}}
                                         <select class="form-select" name="satuan">
-                                            @if (old('satuan', $data->satuan) == "pc")
-                                                <option value="pc" selected>pc</option>
+                                            @if (old('satuan', $data->satuan) == "pcs")
+                                                <option value="pcs" selected>pcs</option>
                                                 <option value="pak">pak</option>
                                                 <option value="slop">slop</option>
                                             @elseif (old('satuan', $data->satuan) == "pak")
-                                                <option value="pc">pc</option>
+                                                <option value="pcs">pcs</option>
                                                 <option value="pak" selected>pak</option>
                                                 <option value="slop">slop</option>
                                             @elseif (old('satuan', $data->satuan) == "slop")
-                                                <option value="pc">pc</option>
+                                                <option value="pcs">pcs</option>
                                                 <option value="pak">pak</option>
                                                 <option value="slop" selected>slop</option>
                                             @else
-                                                <option value="pc">pc</option>
+                                                <option value="pcs">pcs</option>
                                                 <option value="pak">pak</option>
                                                 <option value="slop">slop</option>
                                             @endif
@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button href="{{ route('barangs.create') }}" class="btn btn-primary">Submit</button>
+                            <button tyupe="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form>
