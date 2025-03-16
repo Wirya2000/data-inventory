@@ -43,7 +43,7 @@
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Suppliers</span>
+                    <span class="nav-link-text ms-1">Supplier</span>
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse list-unstyled {{ request()->routeIs('suppliers.*') ? 'show' : '' }}" id="supplierSubmenu">
@@ -65,22 +65,22 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="#supplierSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="#supplierSubmenu" data-bs-toggle="collapse" aria-expanded="false">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Supplier</span>
+                    <span class="nav-link-text ms-1">Karyawan</span>
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
-                <ul class="collapse list-unstyled {{ request()->routeIs('kategoris.*') ? 'show' : '' }}" id="supplierSubmenu">
+                <ul class="collapse list-unstyled {{ request()->routeIs('users.*') ? 'show' : '' }}" id="supplierSubmenu">
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'kategoris.index' ? 'active' : '' }}" href="{{ route('kategoris.index') }}">
-                            List Supplier
+                        <a class="nav-link {{ Route::currentRouteName() == 'users.index' ? 'active' : '' }}" href="{{ route('users.index') }}">
+                            List Karyawan
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'kategoris.create' ? 'active' : '' }}" href="{{ route('kategoris.create') }}">
-                            Add Supplier
+                        <a class="nav-link {{ Route::currentRouteName() == 'users.create' ? 'active' : '' }}" href="{{ route('users.create') }}">
+                            Add Karyawan
                         </a>
                     </li>
                     {{-- <li class="nav-item">
@@ -195,22 +195,22 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="#reportSubmenu" data-bs-toggle="collapse" aria-expanded="false">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Customer</span>
+                    <span class="nav-link-text ms-1">Laporan</span>
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
-                <ul class="collapse list-unstyled {{ request()->routeIs('customers.*') ? 'show' : '' }}" id="customerSubmenu">
+                <ul class="collapse list-unstyled {{ request()->routeIs('reports.*') ? 'show' : '' }}" id="reportSubmenu">
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'customers.index' ? 'active' : '' }}" href="{{ route('customers.index') }}">
-                            List Customer
+                        <a class="nav-link {{ Route::currentRouteName() == 'reports.index' ? 'active' : '' }}" href="{{ route('reports.index') }}">
+                            Laporan...
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'customers.create' ? 'active' : '' }}" href="{{ route('customers.create') }}">
-                            Add Customer
+                        <a class="nav-link {{ Route::currentRouteName() == 'reports.create' ? 'active' : '' }}" href="{{ route('reports.create') }}">
+                            Laporan...
                         </a>
                     </li>
                     {{-- <li class="nav-item">
@@ -323,40 +323,6 @@
                         </a>
                     </li> --}}
                 </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Customer</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
-                </a>
-                <ul class="collapse list-unstyled {{ request()->routeIs('customers.*') ? 'show' : '' }}" id="customerSubmenu">
-                    <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'customers.index' ? 'active' : '' }}" href="{{ route('customers.index') }}">
-                            List Customer
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'customers.create' ? 'active' : '' }}" href="{{ route('customers.create') }}">
-                            Add Customer
-                        </a>
-                    </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
-                            Settings
-                        </a>
-                    </li> --}}
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ str_contains(request()->url(), 'user-management') == true ? 'active' : '' }}" href="{{ route('page', ['page' => 'user-management']) }}">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">User Management</span>
-                </a>
             </li>
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Pages</h6>

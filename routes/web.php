@@ -19,6 +19,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 	Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
@@ -44,12 +45,15 @@ Route::group(['middleware' => 'auth'], function () {
     // Route::post('pembelians/showAddDetailPembelian/', 'PembelianController@showAddDetailPembelian')->name('pembelians.showAddDetailPembelian');
     Route::post('pembelians/showAddDetailPembelian/', [PembelianController::class, 'showAddDetailPembelian'])->name('pembelians.showAddDetailPembelian');
     Route::post('pembelians/addDetailPembelian/', [PembelianController::class, 'addDetailPembelian'])->name('pembelians.addDetailPembelian');
+    Route::get('barangs/getKodebarang/', [BarangController::class, 'getKodeBarang'])->name('barangs.getKodeBarang');
     Route::resource('customers', CustomerController::class);
     Route::resource('suppliers', SupplierController::class);
+    Route::resource('users', UserController::class);
     Route::resource('kategoris', KategoriController::class);
     Route::resource('barangs', BarangController::class);
     Route::resource('pembelians', PembelianController::class);
     Route::resource('penjualans', PenjualanController::class);
+    Route::resource('reports', PenjualanController::class);
 	Route::get('/{page}', [PageController::class, 'index'])->name('page');
 	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 });

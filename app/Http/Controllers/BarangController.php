@@ -27,8 +27,16 @@ class BarangController extends Controller
      */
     public function create()
     {
+
+        // dd((Barang::where('kategoris_id',Kategori::first()->id)->first()->kode));
+        ;
+        // dd(substr((Barang::where('kategoris_id',Kategori::first()->id)->first()->kode), -3));
+        $no_kode = str_pad(substr((Barang::where('kategoris_id',Kategori::first()->id)->latest()->first()->kode), -3)+1,3, '0', 0);
+        $kode_kategori = Kategori::first()->kode;
+        $kode = $kode_kategori . $no_kode;
         return view('pages.admin.barang.create', [
-            'kategoris' => Kategori::all()
+            'kategoris' => Kategori::all(),
+            'kode' => $kode,
         ]);
     }
 
@@ -44,8 +52,8 @@ class BarangController extends Controller
             'kode' => 'required|max:20',
             'nama' => 'required|max:255',
             'satuan' => 'required|max:255',
-            'harga_beli' => 'required',
-            'harga_jual' => 'required',
+            'harga_beli' => 'required|numeric',
+            'harga_jual' => 'required|numeric',
             'kategoris_id' => 'required',
           ]);
 
@@ -96,8 +104,8 @@ class BarangController extends Controller
             'nama' => 'required|max:255',
             'satuan' => 'required|max:255',
             // 'stock' => 'required|max:255',
-            'harga_beli' => 'required|max:255',
-            'harga_jual' => 'required|max:255'
+            'harga_beli' => 'required|numeric',
+            'harga_jual' => 'required|numeric'
         ]);
 
         $validatedData = $request->validate($rules);
@@ -119,5 +127,12 @@ class BarangController extends Controller
         Barang::destroy($barang->id);
 
         return redirect('/barangs')->with('success', 'Barang has been deleted!');
+    }
+
+    public function getKodeBarang(Request $request) {
+        $no_kode = str_pad(substr((Barang::where('kategoris_id',Kategori::find($$request->kategoris_id)->id)->latest()->first()->kode), -3)+1,3, '0', 0);
+        $kode_kategori = Kategori::first()->kode;
+        $kode = $kode_kategori . $no_kode;
+        return $kode;
     }
 }

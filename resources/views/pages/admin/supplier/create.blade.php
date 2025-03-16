@@ -33,7 +33,7 @@
                                         @error('alamat')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="text" name="alamat" placeholder="Alamat" {{ old('alamat') }}>
+                                        <input class="form-control" type="text" name="alamat" placeholder="Alamat" value="{{ old('alamat') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -42,7 +42,7 @@
                                         @error('no_telp')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="text" name="no_telp" placeholder="No Telp" {{ old('no_telp') }}>
+                                        <input class="form-control" type="text" name="no_telp" placeholder="No Telp" value="{{ old('no_telp') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -51,7 +51,7 @@
                                         @error('note')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="text" name="note" placeholder="Note" {{ old('note') }}>
+                                        <input class="form-control" type="text" name="note" placeholder="Note" value="{{ old('note') }}">
                                     </div>
                                 </div>
                             </div>

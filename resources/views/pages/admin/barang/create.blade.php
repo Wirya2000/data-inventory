@@ -25,7 +25,7 @@
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="kategori" placeholder="Kategori" {{ old('kategori') }}> --}}
-                                        <select class="form-select" name="kategoris_id" title="Kategori">
+                                        <select class="form-select" name="kategoris_id" title="Kategori" onchange="getKodeBarang(this.value);">
                                             @foreach ($kategoris as $kategori)
                                             @if (old('kategoris_id') == $kategori->id)
                                                 <option value="{{ $kategori->id }}" selected>{{ $kategori->nama }}</option>
@@ -42,7 +42,7 @@
                                         @error('kode')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="text" name="kode" placeholder="Kode" {{ old('kode') }}>
+                                        <input class="form-control" type="text" name="kode" placeholder="Kode" readonly value="{{ $kode }}">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -111,3 +111,21 @@
         @include('layouts.footers.auth.footer')
     </div>
 @endsection
+
+@push('js')
+<script>
+    function getKodeBarang(kategoris_id) {
+        $.ajax({
+            type:'GET',
+            url:'{{ route("barangs.getKodeBarang") }}',
+            data:{ kategoris_id: kategoris_id },
+            success: function(response) {
+                $('#kode').val(response.kode);
+            },
+            error: function(xhr) {
+                console.error("Error loading modal:", xhr.responseText);
+            }
+        });
+    }
+</script>
+@endpush

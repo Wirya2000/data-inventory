@@ -60,7 +60,7 @@ class CustomerController extends Controller
     {
         return view('pages.admin.customer.show', [
             'data' => $customer
-          ]);
+        ]);
     }
 
     /**
@@ -73,7 +73,7 @@ class CustomerController extends Controller
     {
         return view('pages.admin.customer.edit', [
             'data' => $customer
-          ]);
+        ]);
     }
 
     /**
@@ -89,14 +89,14 @@ class CustomerController extends Controller
             'nama' => 'required|max:255',
             'alamat' => 'required|max:255',
             'no_telp' => 'required|max:255',
-          ]);
+        ]);
 
-          $validatedData = $request->validate($rules);
+        $validatedData = $request->validate($rules);
 
-          Customer::where('id', $customer->id)
-              ->update($validatedData);
+        Customer::where('id', $customer->id)
+                ->update($validatedData);
 
-          return redirect('/customers')->with('success', 'Customer has been updated!');
+        return redirect('/customers')->with('success', 'Customer has been updated!');
     }
 
     /**

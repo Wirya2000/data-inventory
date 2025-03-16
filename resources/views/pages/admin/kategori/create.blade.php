@@ -24,7 +24,7 @@
                                         @error('kode')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="text" name="kode" placeholder="Kode" {{ old('kode') }}>
+                                        <input class="form-control" type="text" name="kode" placeholder="Kode" value="{{ old('kode') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
