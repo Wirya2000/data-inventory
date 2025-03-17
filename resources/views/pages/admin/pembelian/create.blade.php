@@ -172,5 +172,110 @@
                 }
             });
         }
+
+        function updateTableDetailPembelian() {
+            var formEl = document.forms.createForm;
+            var formData = new FormData(formEl);
+            $.ajax({
+                type:'POST',
+                url:'{{ route("pembelians.addDetailPembelian") }}',
+                data:'_token= <?php echo csrf_token() ?>',
+                success: function(data){
+                if (data.status==200){
+                    var newData = `<tr id="tr_`+data.id+`">
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-xs text-primary mb-0">{{ $loop->iteration }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td id="td_kode_`+data.id+`">
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-xs text-primary mb-0">`+formData.get('kode')+`</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td id="td_nama_`+data.id+`">
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-xs text-primary mb-0">`+formData.get('nama')+`</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td id="td_price_`+data.id+`">
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-xs text-primary mb-0">`+formData.get('price')+`</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td id="td_discount_`+data.id+`">
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-xs text-primary mb-0">`+formData.get('discount')+`</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td id="td_quantity_`+data.id+`">
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-xs text-primary mb-0">`+formData.get('quantity')+`</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td id="td_subtotal_`+data.id+`">
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <p class="text-xs text-primary mb-0">`+formData.get('subtotal')+`</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a href="/pembelians/{{ $data->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
+                                        <form action="/pembelians/{{ $data->id }}" method="POST" class="d-inline">
+                                            @method('delete')
+                                            @csrf
+                                            <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
+                                        </form>
+                                    </td>
+                                </tr>`
+
+                    $('#table-body').append(newData);
+                }
+                clearInput();
+                $('#pesan').show();
+                $('#pesan').html(data.msg);
+                setTimeout(function() {
+                    $("#pesan").hide();
+                }, 5000);
+
+                $('body').removeClass('modal-open');
+                $('#modalCreate').modal('hide');
+            },
+            error: function(xhr){
+                if (xhr.status == 422){
+                    data = JSON.parse(xhr.responseText);
+                    clearError("modalCreate");
+                    for (var k in data.errors){
+                        $("#modalCreate .alert ul").append(`<li>`+data.errors[k][0]+`</li>`);
+                    }
+                    $("#modalCreate .alert").show();
+                    const element = document.getElementById("modalCreate").getElementsByClassName("alert")[0];
+                    element.scrollIntoView();
+                }else{
+                    data = JSON.parse(xhr.responseText);
+                    $('#error').show();
+                    $('#error').html(data.msg);
+                    setTimeout(function() {
+                        $("#error").hide();
+                    }, 5000);
+                    $('body').removeClass('modal-open');
+                }
+            }
+            });
+
+        }
     </script>
 @endpush
