@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('pembelians/showAddDetailPembelian/', [PembelianController::class, 'showAddDetailPembelian'])->name('pembelians.showAddDetailPembelian');
     Route::post('pembelians/addDetailPembelian/', [PembelianController::class, 'addDetailPembelian'])->name('pembelians.addDetailPembelian');
     Route::get('barangs/getKodebarang/', [BarangController::class, 'getKodeBarang'])->name('barangs.getKodeBarang');
+    Route::get('pembelians/getDataKategoriBarang/', [PembelianController::class, 'getDataKategoriBarang'])->name('pembelians.getDataKategoriBarang');
     Route::resource('customers', CustomerController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('users', UserController::class);

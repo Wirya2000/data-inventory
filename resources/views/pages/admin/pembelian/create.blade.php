@@ -68,7 +68,7 @@
                                     <div class="card mb-4">
                                         <div class="card-header pb-0">
                                             <h6>Pembelian</h6>
-                                            <a class="btn btn-primary"  href="javascript:void(0);" onclick="getAddDetailPembelian()">Add Pembelian</a>
+                                            <a class="btn btn-primary"  href="javascript:void(0);" onclick="getAddDetailPembelian();">Add Pembelian</a>
                                             <div id="modalContainer"></div>
                                         </div>
                                         <div class="card-body px-0 pt-0 pb-2">
@@ -152,130 +152,152 @@
 
 @push('js')
     <script>
-        function getAddDetailPembelian() {
-            $.ajax({
-                type:'POST',
-                url:'{{ route("pembelians.showAddDetailPembelian") }}',
-                data:'_token= <?php echo csrf_token() ?>',
-                success: function(response) {
-                    // Ensure we extract the modal content if it's inside 'msg'
-                    let modalHtml = response.msg ? response.msg : response;
+        // $(document).ready(function() {
+            function getAddDetailPembelian() {
+                $.ajax({
+                    type:'POST',
+                    url:'{{ route("pembelians.showAddDetailPembelian") }}',
+                    data:'_token= <?php echo csrf_token() ?>',
+                    success: function(response) {
+                        // Ensure we extract the modal content if it's inside 'msg'
+                        let modalHtml = response.msg ? response.msg : response;
 
-                    // Inject the modal into the page
-                    $('#modalContainer').html(modalHtml);
+                        // Inject the modal into the page
+                        $('#modalContainer').html(modalHtml);
 
-                    // Show the modal using Bootstrap's modal function
-                    $('#modalAddDetailPembelian').modal('show');
-                },
-                error: function(xhr) {
-                    console.error("Error loading modal:", xhr.responseText);
-                }
-            });
-        }
-
-        function updateTableDetailPembelian() {
-            var formEl = document.forms.createForm;
-            var formData = new FormData(formEl);
-            $.ajax({
-                type:'POST',
-                url:'{{ route("pembelians.addDetailPembelian") }}',
-                data:'_token= <?php echo csrf_token() ?>',
-                success: function(data){
-                if (data.status==200){
-                    var newData = `<tr id="tr_`+data.id+`">
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-xs text-primary mb-0">{{ $loop->iteration }}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td id="td_kode_`+data.id+`">
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-xs text-primary mb-0">`+formData.get('kode')+`</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td id="td_nama_`+data.id+`">
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-xs text-primary mb-0">`+formData.get('nama')+`</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td id="td_price_`+data.id+`">
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-xs text-primary mb-0">`+formData.get('price')+`</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td id="td_discount_`+data.id+`">
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-xs text-primary mb-0">`+formData.get('discount')+`</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td id="td_quantity_`+data.id+`">
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-xs text-primary mb-0">`+formData.get('quantity')+`</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td id="td_subtotal_`+data.id+`">
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <p class="text-xs text-primary mb-0">`+formData.get('subtotal')+`</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">
-                                        <a href="/pembelians/{{ $data->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
-                                        <form action="/pembelians/{{ $data->id }}" method="POST" class="d-inline">
-                                            @method('delete')
-                                            @csrf
-                                            <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
-                                        </form>
-                                    </td>
-                                </tr>`
-
-                    $('#table-body').append(newData);
-                }
-                clearInput();
-                $('#pesan').show();
-                $('#pesan').html(data.msg);
-                setTimeout(function() {
-                    $("#pesan").hide();
-                }, 5000);
-
-                $('body').removeClass('modal-open');
-                $('#modalCreate').modal('hide');
-            },
-            error: function(xhr){
-                if (xhr.status == 422){
-                    data = JSON.parse(xhr.responseText);
-                    clearError("modalCreate");
-                    for (var k in data.errors){
-                        $("#modalCreate .alert ul").append(`<li>`+data.errors[k][0]+`</li>`);
+                        // Show the modal using Bootstrap's modal function
+                        $('#modalAddDetailPembelian').modal('show');
+                        dataKategoriBarang();
+                    },
+                    error: function(xhr) {
+                        console.error("Error loading modal:", xhr.responseText);
                     }
-                    $("#modalCreate .alert").show();
-                    const element = document.getElementById("modalCreate").getElementsByClassName("alert")[0];
-                    element.scrollIntoView();
-                }else{
-                    data = JSON.parse(xhr.responseText);
-                    $('#error').show();
-                    $('#error').html(data.msg);
-                    setTimeout(function() {
-                        $("#error").hide();
-                    }, 5000);
-                    $('body').removeClass('modal-open');
-                }
+                });
             }
-            });
 
-        }
+            // $('.combobox-select2').select2();
+            function dataKategoriBarang() {
+                $.ajax({
+                    type:'GET',
+                    url:'{{ route("pembelians.getDataKategoriBarang") }}',
+                    data:'_token= <?php echo csrf_token() ?>',
+                    success: function(data){
+                    if (data.status==200){
+                        var newData = "";
+                        data.message.forEach(d => {
+                            newData += `<option value="`+d.id+`">`+d.nama+`</option>`
+                        });
+                        $('#kategori_barang').html(newData);
+                    }
+                },
+                error: function(xhr){
+                }
+                });
+            }
+
+
+            function updateTableDetailPembelian() {
+                var formEl = document.forms.createForm;
+                var formData = new FormData(formEl);
+                $.ajax({
+                    type:'POST',
+                    url:'{{ route("pembelians.addDetailPembelian") }}',
+                    data:'_token= <?php echo csrf_token() ?>',
+                    success: function(data){
+                    if (data.status==200){
+                        var newData = `<tr id="tr_`+data.id+`">
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <p class="text-xs text-primary mb-0">1</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td id="td_kode_`+data.id+`">
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <p class="text-xs text-primary mb-0">`+formData.get('kode')+`</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td id="td_nama_`+data.id+`">
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <p class="text-xs text-primary mb-0">`+formData.get('nama')+`</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td id="td_price_`+data.id+`">
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <p class="text-xs text-primary mb-0">`+formData.get('price')+`</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td id="td_discount_`+data.id+`">
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <p class="text-xs text-primary mb-0">`+formData.get('discount')+`</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td id="td_quantity_`+data.id+`">
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <p class="text-xs text-primary mb-0">`+formData.get('quantity')+`</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td id="td_subtotal_`+data.id+`">
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <p class="text-xs text-primary mb-0">`+formData.get('subtotal')+`</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <form action="/pembelians/`+data.id+`" method="POST" class="d-inline">
+                                                @method('delete')
+                                                @csrf
+                                                <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
+                                            </form>
+                                        </td>
+                                    </tr>`
+
+                        $('#table-body').append(newData);
+                    }
+                    clearInput();
+                    $('#pesan').show();
+                    $('#pesan').html(data.msg);
+                    setTimeout(function() {
+                        $("#pesan").hide();
+                    }, 5000);
+
+                    $('body').removeClass('modal-open');
+                    $('#modalCreate').modal('hide');
+                },
+                error: function(xhr){
+                    if (xhr.status == 422){
+                        data = JSON.parse(xhr.responseText);
+                        clearError("modalCreate");
+                        for (var k in data.errors){
+                            $("#modalCreate .alert ul").append(`<li>`+data.errors[k][0]+`</li>`);
+                        }
+                        $("#modalCreate .alert").show();
+                        const element = document.getElementById("modalCreate").getElementsByClassName("alert")[0];
+                        element.scrollIntoView();
+                    }else{
+                        data = JSON.parse(xhr.responseText);
+                        $('#error').show();
+                        $('#error').html(data.msg);
+                        setTimeout(function() {
+                            $("#error").hide();
+                        }, 5000);
+                        $('body').removeClass('modal-open');
+                    }
+                }
+                });
+            }
+        // });
     </script>
 @endpush

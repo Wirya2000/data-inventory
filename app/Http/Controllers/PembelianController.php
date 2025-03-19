@@ -119,13 +119,28 @@ class PembelianController extends Controller
     public function showAddDetailPembelian(Request $request) {
         // $this->authorize('customer-permission');
 
-        $id = $request->get('id');
+        // $id = $request->get('id');
         // $data = Pembelian::find($id);
-        $barangs = Barang::all();
+        // $barangs = Barang::all();
+        $kategoris = Kategori::all();
+
+        return response()->json(array(
+            'msg' => view('pages.admin.pembelian.showAddDetailPembelian', compact('kategoris'))->render()
+        ), 200);
+    }
+
+    public function getBarangsDataByKategori(Request $request) {
+        // $this->authorize('customer-permission');
+
+        $barangs = Barang::where('kategoris_id', $request->kategoris_id);
 
         return response()->json(array(
             'msg' => view('pages.admin.pembelian.showAddDetailPembelian', compact('barangs'))->render()
         ), 200);
+    }
+
+    public function addDetailPembelian(Barang $barang) {
+        return $barang;
     }
 
     public function addToCart($id) {
@@ -171,5 +186,13 @@ class PembelianController extends Controller
         // $this->authorize('customer-permission');
 
         return view('customer.cart');
+    }
+
+    public function getDataKategoriBarang() {
+        $datas = Kategori::all();
+        return response()->json(array(
+            'status'=>200,
+            'message' => $datas
+        ), 200);
     }
 }
