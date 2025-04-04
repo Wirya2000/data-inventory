@@ -7,6 +7,8 @@ use App\Models\Kategori;
 use App\Models\Pembelian;
 use App\Models\Supplier;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class PembelianController extends Controller
@@ -30,10 +32,11 @@ class PembelianController extends Controller
      */
     public function create()
     {
+        session()->forget('cart');
         return view('pages.admin.pembelian.create', [
             'kategoris' => Kategori::all(),
             'barangs' => Barang::all(),
-            'users' => User::all(),
+            'users' => User::where('role', '!=', 'kasir')->get(),
             'suppliers' => Supplier::all()
         ]);
     }
@@ -44,15 +47,40 @@ class PembelianController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function insertBarangTransaction($cart, $pembelian) {
+        // $this->authorize('customer-permission');
+
+        $total = 0;
+        foreach($cart as $id => $detail) {
+            // $total += $detail['harga_satuan'] * $detail['jumlah'];
+            $pembelian->barangs()->attach($id, ['jumlah' => $detail['jumlah'], 'harga_satuan' => $detail['harga_satuan']]);
+        }
+
+        return $total;
+    }
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'tanggal_beli' => 'required|max:255'
+            'users_id' => 'required|max:255',
+            'suppliers_id' => 'required|max:255'
           ]);
 
-          Pembelian::create($validatedData);
+        $cart = session()->get('cart');
+        $user = Auth::user();
+        $p = new Pembelian();
+        $p->user_id = $user->id;
+        $p->tanggal_beli = Carbon::now()->toDateTimeString();
+        $p->save();
+        $pembelian = Pembelian::find($p->id);
 
-          return redirect('/pembelians')->with('success', 'New Pembelian has been added!');
+        $totalPrice = $this->insertBarangTransaction($cart, $pembelian);
+        $p->total = $totalPrice;
+        $p->save();
+
+        Pembelian::create($validatedData);
+
+        return redirect('/pembelians')->with('success', 'New Pembelian has been added!');
     }
 
     /**
@@ -140,7 +168,15 @@ class PembelianController extends Controller
     }
 
     public function addDetailPembelian(Barang $barang) {
-        return $barang;
+        $message = $this->addToCart($barang->id);
+        $data = $barang;
+        $cart = session()->get('cart');
+        $data['jumlah'] = $cart[$barang->id]['jumlah'];
+        return response()->json(array(
+            'status'=>200,
+            'message' => $message,
+            'data' => $data
+        ), 200);
     }
 
     public function addToCart($id) {
@@ -149,19 +185,46 @@ class PembelianController extends Controller
         $barang = Barang::find($id);
         $cart = session()->get('cart');
 
-        if(!isset($cart[$id])) {
+        if(!isset ($cart[$id])) {
             $cart[$id]=[
-            "name" => $barang->nama,
-            "quantity" => 1,
-            "price" => $barang->harga_jual,
+            "kode" => $barang->kode,
+            "nama" => $barang->nama,
+            "jumlah" => 1,
+            "harga_jual" => $barang->harga_jual,
             ];
+            $message = 'Item added to cart!';
         } else {
-            $cart[$id]['quantity']++;
+            $cart[$id]['jumlah']++;
+            $message = 'Item quantity updated!';
         }
         session()->put('cart', $cart);
 
-        return redirect()->back()->with('status', 'Barang added to cart successfully!');
+        return $message;
     }
+
+    public function updateJumlah($id) {
+        // $this->authorize('customer-permission');
+
+        $barang = Barang::find($id);
+        $cart = session()->get('cart');
+
+        if(!isset ($cart[$id])) {
+            $cart[$id]=[
+            "kode" => $barang->kode,
+            "nama" => $barang->nama,
+            "jumlah" => 1,
+            "harga_jual" => $barang->harga_jual,
+            ];
+            $message = 'Item added to cart!';
+        } else {
+            $cart[$id]['jumlah']++;
+            $message = 'Item quantity updated!';
+        }
+        session()->put('cart', $cart);
+
+        return redirect()->back()->with('status', $message);
+    }
+
     public function removeFromCart(Request $request) {
         // $this->authorize('customer-permission');
 
@@ -193,6 +256,21 @@ class PembelianController extends Controller
         return response()->json(array(
             'status'=>200,
             'message' => $datas
+        ), 200);
+    }
+
+    public function getDataListBarang(Request $request) {
+        $datas = Barang::where('kategoris_id', $request->kategori_id)->get();
+        return response()->json(array(
+            'status'=>200,
+            'message' => $datas
+        ), 200);
+    }
+
+    public function getDataHargaJual(Barang $barang) {
+        return response()->json(array(
+            'status'=>200,
+            'message' => $barang->harga_jual
         ), 200);
     }
 }

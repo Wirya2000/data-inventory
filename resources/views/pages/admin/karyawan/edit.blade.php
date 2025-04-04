@@ -27,6 +27,12 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Password</label>
+                                        <input class="form-control @error('password') is-invalid @enderror" id="password" name="password" type="text" placeholder="Password" required autofocus value="{{ old('password', $data->password) }}" >
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Email</label>
                                         <input class="form-control @error('email') is-invalid @enderror" id="email" name="email" type="text" placeholder="Email" required autofocus value="{{ old('email', $data->email) }}" >
                                     </div>

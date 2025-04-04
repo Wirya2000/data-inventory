@@ -49,25 +49,15 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Satuan</label>
-                                        {{-- <input class="form-control @error('satuan') is-invalid @enderror" id="satuan" name="satuan" type="text" placeholder="Satuan" required autofocus value="{{ old('satuan', $data->satuan) }}" > --}}
-                                        <select class="form-select" name="satuan">
-                                            @if (old('satuan', $data->satuan) == "pcs")
-                                                <option value="pcs" selected>pcs</option>
-                                                <option value="pak">pak</option>
-                                                <option value="slop">slop</option>
-                                            @elseif (old('satuan', $data->satuan) == "pak")
-                                                <option value="pcs">pcs</option>
-                                                <option value="pak" selected>pak</option>
-                                                <option value="slop">slop</option>
-                                            @elseif (old('satuan', $data->satuan) == "slop")
-                                                <option value="pcs">pcs</option>
-                                                <option value="pak">pak</option>
-                                                <option value="slop" selected>slop</option>
+                                        {{-- <input class="form-control @error('satuan') is-invalid @enderror" id="satuan" name="satuan" type="text" placeholder="Satuan" required autofocus value="{{ old('satuan', $data->satuan->nama) }}" > --}}
+                                        <select class="form-select" name="satuans_id">
+                                            @foreach ($satuans as $satuan)
+                                            @if (old('satuans_id', $satuan->satuan_id) == $satuan->id)
+                                                <option value="{{ $satuan->id }}" selected>{{ $satuan->nama }}</option>
                                             @else
-                                                <option value="pcs">pcs</option>
-                                                <option value="pak">pak</option>
-                                                <option value="slop">slop</option>
+                                                <option value="{{ $satuan->id }}">{{ $satuan->nama }}</option>
                                             @endif
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>

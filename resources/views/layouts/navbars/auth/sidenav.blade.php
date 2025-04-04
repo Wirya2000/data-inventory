@@ -117,6 +117,32 @@
                 </ul>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('satuans.*') ? 'active' : '' }}" href="#satuansSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Satuans</span>
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse list-unstyled {{ request()->routeIs('satuans.*') ? 'show' : '' }}" id="satuansSubmenu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'satuans.index' ? 'active' : '' }}" href="{{ route('satuans.index') }}">
+                            List Satuans
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'satuans.create' ? 'active' : '' }}" href="{{ route('satuans.create') }}">
+                            Add Satuans
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'profile.settings' ? 'active' : '' }}" href="{{ route('profile.settings') }}">
+                            Settings
+                        </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('barangs.*') ? 'active' : '' }}" href="#barangSubmenu" data-bs-toggle="collapse" aria-expanded="false">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>

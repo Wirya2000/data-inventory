@@ -13,6 +13,6 @@ class Customer extends Model
     protected $fillable = ['nama', 'alamat', 'no_telp'];
 
     public function penjualans() {
-        return $this->hasMany(BarangHasPenjualan::class, 'customers_id');
+        return $this->hasMany(Penjualan::class, 'customers_id');
     }
 }

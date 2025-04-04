@@ -10,20 +10,25 @@ class Barang extends Model
     use HasFactory;
     protected $table = 'barangs';
     protected $primaryKey = 'id';
-    protected $fillable = ['kode', 'nama', 'satuan', 'stock', 'harga_beli', 'harga_jual', 'kategoris_id'];
+    protected $fillable = ['kode', 'nama', 'satuan', 'stock', 'harga_beli', 'harga_jual', 'kategoris_id', 'satuans_id'];
 
     public function kategori()
     {
         return $this->belongsTo(Kategori::class, 'kategoris_id');
     }
 
-    public function pembelian()
+    public function satuan()
     {
-        return $this->hasMany(BarangHasPembelian::class, 'barangs_id');
+        return $this->belongsTo(Satuan::class, 'satuans_id');
     }
 
-    public function penjualan()
+    public function pembelians()
     {
-        return $this->hasMany(BarangHasPenjualan::class, 'barangs_id');
+        return $this->belongsToMany(Barang::class, 'barangs_has_pembelians', 'barangs_idbarangs', 'pembelians_idpembelians')->withPivot('jumlah','harga_satuan');
+    }
+
+    public function penjualans()
+    {
+        return $this->belongsToMany(Barang::class, 'barangs_has_penjualans', 'barangs_idbarangs', 'penjualans_idpenjualans')->withPivot('jumlah','harga_satuan');
     }
 }

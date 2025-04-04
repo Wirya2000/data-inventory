@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\Kategori;
+use App\Models\Satuan;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
@@ -31,11 +32,18 @@ class BarangController extends Controller
         // dd((Barang::where('kategoris_id',Kategori::first()->id)->first()->kode));
         ;
         // dd(substr((Barang::where('kategoris_id',Kategori::first()->id)->first()->kode), -3));
-        $no_kode = str_pad(substr((Barang::where('kategoris_id',Kategori::first()->id)->latest()->first()->kode), -3)+1,3, '0', 0);
+        // $no_kode = str_pad(substr((Barang::where('kategoris_id',Kategori::first()->id)->latest()->first()->kode), -3)+1,3, '0', 0);
+        $kategori = Kategori::first(); // Get the first category
+        $barangTerakhir = Barang::where('kategoris_id', $kategori->id)->latest()->first();
+
+        $lastKode = $barangTerakhir ? substr($barangTerakhir->kode, -3) : '000'; // If no barang, use '000'
+        $no_kode = str_pad($lastKode + 1, 3, '0', STR_PAD_LEFT);
+
         $kode_kategori = Kategori::first()->kode;
         $kode = $kode_kategori . $no_kode;
         return view('pages.admin.barang.create', [
             'kategoris' => Kategori::all(),
+            'satuans' => Satuan::all(),
             'kode' => $kode,
         ]);
     }
@@ -87,6 +95,7 @@ class BarangController extends Controller
     {
         return view('pages.admin.barang.edit', [
             'kategoris' => Kategori::all(),
+            'satuans' => Satuan::all(),
             'data' => $barang
         ]);
     }

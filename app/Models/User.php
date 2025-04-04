@@ -47,10 +47,10 @@ class User extends Authenticatable
     protected $primaryKey = 'id';
 
     public function pembelian() {
-        return $this->hasMany(BarangHasPembelian::class, 'users_id');
+        return $this->hasMany(Pembelian::class, 'users_id');
     }
 
     public function penjualan() {
-        return $this->hasMany(BarangHasPenjualan::class, 'users_id');
+        return $this->hasMany(Penjualan::class, 'users_id');
     }
 }

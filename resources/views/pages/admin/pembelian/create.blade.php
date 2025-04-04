@@ -2,12 +2,12 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
-    <div class="card shadow-lg mx-4 card-profile-bottom">
+    {{-- <div class="card shadow-lg mx-4 card-profile-bottom"> --}}
     </div>
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-md-12">
-                <form method="post" action="/barangs" enctype="multipart/form-data">
+                <form method="post" action="/pembelians" enctype="multipart/form-data">
                     @csrf
                     <div class="card">
                         <div class="card-header pb-0">
@@ -18,7 +18,7 @@
                         <div class="card-body">
                             <p class="text-uppercase text-sm">Pembelian Information</p>
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Tanggal Pembelian</label>
                                         @error('tanggal_beli')
@@ -28,7 +28,7 @@
                                         <input type="date" id="tanggal_beli" name="tanggal_beli" class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Karyawan</label>
                                         @error('kategori')
@@ -46,7 +46,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Supplier</label>
                                         @error('kategori')
@@ -64,11 +64,11 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="card mb-4">
+                                <div class="col-md-12">
+                                    <div class="card mb-4 max-height">
                                         <div class="card-header pb-0">
-                                            <h6>Pembelian</h6>
-                                            <a class="btn btn-primary"  href="javascript:void(0);" onclick="getAddDetailPembelian();">Add Pembelian</a>
+                                            <h6>Detail Barang</h6>
+                                            <a class="btn btn-primary"  href="javascript:void(0);" onclick="getAddDetailPembelian();">Add Detail</a>
                                             <div id="modalContainer"></div>
                                         </div>
                                         <div class="card-body px-0 pt-0 pb-2">
@@ -79,15 +79,19 @@
                                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                                 No</th>
                                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                                Tanggal</th>
+                                                                Kode Barang</th>
                                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                                Karyawan</th>
+                                                                Nama Barang</th>
                                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                                Supplier</th>
+                                                                Harga</th>
+                                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                                Quantity</th>
+                                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                                Subtotal</th>
                                                             <th class="text-secondary opacity-7"></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody id="table-body">
                                                         {{-- @foreach ($datas as $data) --}}
                                                         {{-- <tr>
                                                             <td>
@@ -133,6 +137,12 @@
                                                         </tr> --}}
                                                         {{-- @endforeach --}}
                                                     </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="5"><strong>Total</strong></td>
+                                                            <td><strong id="total_amount">0</strong></td>
+                                                        </tr>
+                                                    </tfoot>
                                                 </table>
                                             </div>
                                         </div>
@@ -182,121 +192,206 @@
                     url:'{{ route("pembelians.getDataKategoriBarang") }}',
                     data:'_token= <?php echo csrf_token() ?>',
                     success: function(data){
-                    if (data.status==200){
-                        var newData = "";
-                        data.message.forEach(d => {
-                            newData += `<option value="`+d.id+`">`+d.nama+`</option>`
-                        });
-                        $('#kategori_barang').html(newData);
+                        if (data.status==200){
+                            var newData = `<option value="-">Pilih Kategori Barang</option>`;
+                            data.message.forEach(d => {
+                                newData += `<option value="`+d.id+`">`+d.nama+`</option>`
+                            });
+                            $('#kategori_barang').html(newData);
+                        }
+                    },
+                    error: function(xhr){
                     }
-                },
-                error: function(xhr){
-                }
+                    });
+            }
+
+            function getDataListBarang(kategori_id) {
+                $.ajax({
+                    type:'GET',
+                    url:'{{ route("pembelians.getDataListBarang") }}',
+                    data:{
+                        _token: '<?php echo csrf_token() ?>',
+                        kategori_id: kategori_id
+                    },
+                    success: function(data){
+                        if (data.status==200){
+                            var newData = `<option value="-">Pilih Barang</option>`;
+                            data.message.forEach(d => {
+                                newData += `<option value="`+d.id+`" onchange="updateBarangPrice(`+d.id+`)">`+d.nama+`</option>`
+                            });
+                            $('#nama_barang').html(newData);
+                        }
+                    },
+                    error: function(xhr){
+                    }
                 });
             }
 
-
             function updateTableDetailPembelian() {
-                var formEl = document.forms.createForm;
+                var formEl = document.forms.addDetailForm;
                 var formData = new FormData(formEl);
                 $.ajax({
                     type:'POST',
-                    url:'{{ route("pembelians.addDetailPembelian") }}',
+                    url: `{{ url('pembelians/addDetailPembelian') }}/${document.getElementById('nama_barang').value}`,
                     data:'_token= <?php echo csrf_token() ?>',
                     success: function(data){
-                    if (data.status==200){
-                        var newData = `<tr id="tr_`+data.id+`">
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">1</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td id="td_kode_`+data.id+`">
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">`+formData.get('kode')+`</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td id="td_nama_`+data.id+`">
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">`+formData.get('nama')+`</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td id="td_price_`+data.id+`">
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">`+formData.get('price')+`</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td id="td_discount_`+data.id+`">
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">`+formData.get('discount')+`</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td id="td_quantity_`+data.id+`">
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">`+formData.get('quantity')+`</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td id="td_subtotal_`+data.id+`">
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">`+formData.get('subtotal')+`</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle">
-                                            <form action="/pembelians/`+data.id+`" method="POST" class="d-inline">
-                                                @method('delete')
-                                                @csrf
-                                                <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
-                                            </form>
-                                        </td>
-                                    </tr>`
+                        if (data.status==200){
+                            if (data.message == "Item added to cart!") {
+                                var d = data.data;
+                                var newData = `<tr id="tr_`+d.id+`">
+                                                <td>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <p class="text-xs text-primary mb-0">1</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td id="td_kode_`+d.id+`">
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <p class="text-xs text-primary mb-0">`+d.kode+`</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td id="td_nama_`+d.id+`">
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <p class="text-xs text-primary mb-0">`+d.nama+`</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td id="td_price_`+d.id+`">
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <p class="text-xs text-primary mb-0">`+d.harga_jual.toLocaleString()+`</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td id="td_quantity_`+d.id+`">
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <input class="form-control" type="text" name="input_jumlah_`+ d.id +`" id="input_jumlah_`+ d.id +`" placeholder="Jumlah" data-barang-id="` + d.id + `" data-harga="` + d.harga_jual + `" value="1">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td id="td_subtotal_`+d.id+`">
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <p class="text-xs" id="subtotal_` + d.id + `" text-primary mb-0">`+d.harga_jual.toLocaleString()+`</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <form action="/pembelians/`+d.id+`" method="POST" class="d-inline">
+                                                        @method('delete')
+                                                        @csrf
+                                                        <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
+                                                    </form>
+                                                </td>
+                                            </tr>`;
+                                $('#table-body').append(newData);
+                                calculateTotal();
+                            } else {
+                                let d = data.data;
+                                $(`#input_jumlah_${d.id}`).val(d.jumlah);
+                                let subtotal = d.jumlah * d.harga_jual;
+                                $(`#subtotal_${d.id}`).html(subtotal.toLocaleString());
+                            }
+                            // clearInput();
+                            $('#pesan').show();
+                            $('#pesan').html(data.msg);
+                            setTimeout(function() {
+                                $("#pesan").hide();
+                            }, 5000);
 
-                        $('#table-body').append(newData);
-                    }
-                    clearInput();
-                    $('#pesan').show();
-                    $('#pesan').html(data.msg);
-                    setTimeout(function() {
-                        $("#pesan").hide();
-                    }, 5000);
+                            // $('body').removeClass('modal-open');
+                            $('#modalAddDetailPembelian').modal('hide');
+                            $('#modalCreate').modal('hide');
 
-                    $('body').removeClass('modal-open');
-                    $('#modalCreate').modal('hide');
-                },
-                error: function(xhr){
-                    if (xhr.status == 422){
-                        data = JSON.parse(xhr.responseText);
-                        clearError("modalCreate");
-                        for (var k in data.errors){
-                            $("#modalCreate .alert ul").append(`<li>`+data.errors[k][0]+`</li>`);
                         }
-                        $("#modalCreate .alert").show();
-                        const element = document.getElementById("modalCreate").getElementsByClassName("alert")[0];
-                        element.scrollIntoView();
-                    }else{
-                        data = JSON.parse(xhr.responseText);
-                        $('#error').show();
-                        $('#error').html(data.msg);
-                        setTimeout(function() {
-                            $("#error").hide();
-                        }, 5000);
-                        $('body').removeClass('modal-open');
+                    },
+                    error: function(xhr){
+                        if (xhr.status == 422){
+                            data = JSON.parse(xhr.responseText);
+                            clearError("modalCreate");
+                            for (var k in data.errors){
+                                $("#modalCreate .alert ul").append(`<li>`+data.errors[k][0]+`</li>`);
+                            }
+                            $("#modalCreate .alert").show();
+                            const element = document.getElementById("modalCreate").getElementsByClassName("alert")[0];
+                            element.scrollIntoView();
+                        } else{
+                            data = JSON.parse(xhr.responseText);
+                            $('#error').show();
+                            $('#error').html(data.msg);
+                            setTimeout(function() {
+                                $("#error").hide();
+                            }, 5000);
+                            $('body').removeClass('modal-open');
+                        }
                     }
-                }
                 });
+            }
+
+            function updateHarga(barang_id) {
+                $.ajax({
+                    type:'GET',
+                    url:`{{ url("pembelians/getDataHargaJual") }}/${document.getElementById('nama_barang').value}`,
+                    data:{
+                        _token: '<?php echo csrf_token() ?>',
+                        barang_id: barang_id
+                    },
+                    success: function(data){
+                        if (data.status==200){
+                            let d = data.message;
+                            $('#harga_barang').val(d);
+                        }
+                    },
+                    error: function(xhr){
+                    }
+                });
+            }
+
+            $(document).on('change', 'input[id^="input_jumlah_"]', function () {
+                let jumlah = $(this).val(); // Get new jumlah value
+                let id_barang = $(this).data('barang-id'); // Get barang ID
+                let harga_satuan = $(this).data('harga'); // Get harga
+
+                if (jumlah < 1) {
+                    jumlah = 1; // Prevent negative values
+                    $(this).val(1);
+                }
+
+                let total_harga = jumlah * harga_satuan; // Calculate new total price
+                $('#subtotal_' + id_barang).text(total_harga.toLocaleString()); // Update UI
+                calculateTotal();
+
+                // Send AJAX request to update backend
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route("pembelians.updateJumlah") }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        barang_id: barang_id,
+                        jumlah: jumlah
+                    },
+                    success: function (response) {
+                        console.log('Jumlah updated:', response);
+                    },
+                    error: function (xhr) {
+                        console.error('Error:', xhr);
+                    }
+                });
+            });
+
+            function calculateTotal() {
+                let total = 0;
+                let harga = 0;
+                document.querySelectorAll("[id^='subtotal_']").forEach(cell => {
+                    harga = parseFloat(cell.textContent.replace(/\./g, ''), 10);
+                    total += harga;
+                });
+                document.getElementById("total_amount").textContent = total.toLocaleString();
             }
         // });
     </script>

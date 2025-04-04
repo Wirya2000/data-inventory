@@ -57,7 +57,7 @@ class KategoriController extends Controller
      */
     public function show(Kategori $kategori)
     {
-        return view('pages.admin.supplier.show', [
+        return view('pages.admin.kategori.show', [
             'data' => $kategori
         ]);
     }

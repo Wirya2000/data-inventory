@@ -15,12 +15,83 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // DB::table('users')->insert([
+        //     'username' => 'admin',
+        //     'firstname' => 'Admin',
+        //     'lastname' => 'Admin',
+        //     'email' => 'admin@argon.com',
+        //     'password' => bcrypt('secret')
+        // ]);
+
         DB::table('users')->insert([
             'username' => 'admin',
-            'firstname' => 'Admin',
-            'lastname' => 'Admin',
+            'password' => bcrypt('secret'),
+            // 'email' => 'hendywonggo@gmail.com',
             'email' => 'admin@argon.com',
-            'password' => bcrypt('secret')
+            'nama' => 'hendy',
+            'no_telp' => '081332641234',
+            'alamat' => 'surabaya',
+            'role' => 'admin'
         ]);
+        DB::table('users')->insert([
+            'username' => 'kasir',
+            'password' => bcrypt('secret'),
+            // 'email' => 'hendywonggo888@gmail.com',
+            'email' => 'admin@argon.com',
+            'nama' => 'hendy',
+            'no_telp' => '081332641234',
+            'alamat' => 'surabaya',
+            'role' => 'kasir'
+        ]);
+
+
+        DB::table('suppliers')->insert([
+            'nama' => 'SOGA',
+            'alamat' => 'JL. Tukad Citarum O no 16, Dauh Puri Kelod , Denpasar',
+            'no_telp' => '0819990357661',
+            'note' => 'sales sila, owner made 0877-6169-66211'
+        ]);
+        DB::table('suppliers')->insert([
+            'nama' => 'SINAR PURNAMA',
+            'alamat' => 'JL. Dalung Permai, Krobokan Kaja, Br Bluran',
+            'no_telp' => '08123968952',
+            'note' => 'owner Pak Made , 0361 8685905'
+        ]);
+        DB::table('suppliers')->insert([
+            'nama' => 'DUNIA PLASTIK',
+            'alamat' => 'JL. Cokroaminoto No 432, ubung kaja , Denpasar',
+            'no_telp' => '085100429256',
+            'note' => 'owner Ko Acuan 0817341104'
+        ]);
+        DB::table('suppliers')->insert([
+            'nama' => 'TRIGUNA JAYA',
+            'alamat' => 'JL. Nginden Intan Raya no A8, Surabaya',
+            'no_telp' => '08121384296',
+            'note' => ''
+        ]);
+
+
+        DB::table('kategoris')->insert([
+            'kode' => 'AAA',
+            'nama' => 'OPP / KANTONGAN'
+        ]);
+        DB::table('kategoris')->insert([
+            'kode' => 'BBB',
+            'nama' => 'KRESEK/ GELAS'
+        ]);
+        DB::table('kategoris')->insert([
+            'kode' => 'CCC',
+            'nama' => 'THINWALL/MIKA'
+        ]);
+        DB::table('kategoris')->insert([
+            'kode' => 'DDD',
+            'nama' => 'KERTAS DLL '
+        ]);
+
+
+        // DB::table('barangs')->insert([
+        //     'kode' => 'F',
+        //     'nama' => 'KERTAS DLL'
+        // ]);
     }
 }

@@ -57,28 +57,18 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Satuan</label>
-                                        @error('satuan')
+                                        @error('satuans_id')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        {{-- <input class="form-control" type="text" name="satuan" placeholder="Satuan" value="{{ old('satuan') }}"> --}}
-                                        <select class="form-select" name="satuan">
-                                            @if (old('satuan') == "pcs")
-                                                <option value="pcs" selected>pcs</option>
-                                                <option value="pak">pak</option>
-                                                <option value="slop">slop</option>
-                                            @elseif (old('satuan') == "pak")
-                                                <option value="pcs">pcs</option>
-                                                <option value="pak" selected>pak</option>
-                                                <option value="slop">slop</option>
-                                            @elseif (old('satuan') == "slop")
-                                                <option value="pcs">pcs</option>
-                                                <option value="pak">pak</option>
-                                                <option value="slop" selected>slop</option>
+                                        {{-- <input class="form-control" type="text" name="satuan" placeholder="Satuan" {{ old('satuan') }}> --}}
+                                        <select class="form-select" name="satuans_id" title="Satuan" onchange="getKodeBarang(this.value);">
+                                            @foreach ($satuans as $satuan)
+                                            @if (old('satuans_id') == $satuan->id)
+                                                <option value="{{ $satuan->id }}" selected>{{ $satuan->nama }}</option>
                                             @else
-                                                <option value="pcs">pcs</option>
-                                                <option value="pak">pak</option>
-                                                <option value="slop">slop</option>
+                                                <option value="{{ $satuan->id }}">{{ $satuan->nama }}</option>
                                             @endif
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>

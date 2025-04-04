@@ -12,7 +12,8 @@ class Penjualan extends Model
     protected $primaryKey = 'id';
     protected $fillable = ['tanggal', 'nama_pembeli', 'total'];
 
-    public function barangs() {
-        return $this->hasMany(BarangHasPenjualan::class, 'penjualans_id');
+    public function barangs()
+    {
+        return $this->belongsToMany(Barang::class, 'barangs_has_penjualans', 'penjualans_idpenjualans', 'barangs_idbarangs')->withPivot('jumlah','harga_satuan');
     }
 }

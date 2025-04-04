@@ -22,6 +22,7 @@ class CreateBarangsTable extends Migration
             $table->integer('harga_beli');
             $table->integer('harga_jual');
             $table->foreignId('kategoris_id')->constrained('kategoris');
+            $table->foreignId('satuans_id')->constrained('satuans');
             $table->timestamps();
         });
     }

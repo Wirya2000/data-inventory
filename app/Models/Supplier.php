@@ -13,6 +13,6 @@ class Supplier extends Model
     protected $fillable = ['nama', 'alamat', 'no_telp', 'note'];
 
     public function pembelian() {
-        return $this->hasMany(BarangHasPembelian::class, 'suppliers_id');
+        return $this->hasMany(Pembelian::class, 'suppliers_id');
     }
 }

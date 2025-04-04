@@ -68,7 +68,7 @@
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">{{ $data->satuan }}</p>
+                                                    <p class="text-xs text-primary mb-0">{{ $data->satuan->nama }}</p>
                                                 </div>
                                             </div>
                                         </td>
