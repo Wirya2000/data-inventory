@@ -12,8 +12,18 @@ class Penjualan extends Model
     protected $primaryKey = 'id';
     protected $fillable = ['tanggal', 'nama_pembeli', 'total'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class,'users_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class,'customers_id');
+    }
+
     public function barangs()
     {
-        return $this->belongsToMany(Barang::class, 'barangs_has_penjualans', 'penjualans_idpenjualans', 'barangs_idbarangs')->withPivot('jumlah','harga_satuan');
+        return $this->belongsToMany(Barang::class, 'barangs_has_penjualans', 'penjualans_id', 'barangs_id')->withPivot('jumlah','harga_satuan');
     }
 }

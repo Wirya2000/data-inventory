@@ -17,8 +17,13 @@ class Pembelian extends Model
         return $this->belongsTo(User::class,'users_id');
     }
 
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class,'suppliers_id');
+    }
+
     public function barangs()
     {
-        return $this->belongsToMany(Barang::class, 'barangs_has_pembelians', 'pembelians_idpembelians', 'barangs_idbarangs')->withPivot('jumlah','harga_satuan');
+        return $this->belongsToMany(Barang::class, 'barangs_has_pembelians', 'pembelians_id', 'barangs_id')->withPivot('jumlah','harga_satuan');
     }
 }

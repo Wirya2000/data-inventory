@@ -18,8 +18,6 @@ class CreateBarangHasPenjualansTable extends Migration
             $table->foreignId('penjualans_id')->constrained('penjualans');
             $table->integer('jumlah');
             $table->integer('harga_satuan');
-            $table->foreignId('users_id')->constrained('users');
-            $table->foreignId('customers_id')->constrained('customers');
             $table->timestamps();
         });
     }

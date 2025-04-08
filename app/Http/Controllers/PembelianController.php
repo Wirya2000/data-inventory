@@ -52,7 +52,7 @@ class PembelianController extends Controller
 
         $total = 0;
         foreach($cart as $id => $detail) {
-            // $total += $detail['harga_satuan'] * $detail['jumlah'];
+            $total += $detail['harga_satuan'] * $detail['jumlah'];
             $pembelian->barangs()->attach($id, ['jumlah' => $detail['jumlah'], 'harga_satuan' => $detail['harga_satuan']]);
         }
 
@@ -62,15 +62,18 @@ class PembelianController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'users_id' => 'required|max:255',
-            'suppliers_id' => 'required|max:255'
+            'users_id' => 'required',
+            'suppliers_id' => 'required'
           ]);
 
         $cart = session()->get('cart');
         $user = Auth::user();
         $p = new Pembelian();
-        $p->user_id = $user->id;
+        $p->users_id = $user->id;
         $p->tanggal_beli = Carbon::now()->toDateTimeString();
+        $p->total = 0;
+        $p->users_id = $validatedData['users_id'];
+        $p->suppliers_id = $validatedData['suppliers_id'];
         $p->save();
         $pembelian = Pembelian::find($p->id);
 
@@ -78,7 +81,7 @@ class PembelianController extends Controller
         $p->total = $totalPrice;
         $p->save();
 
-        Pembelian::create($validatedData);
+        // Pembelian::create($validatedData);
 
         return redirect('/pembelians')->with('success', 'New Pembelian has been added!');
     }
@@ -190,7 +193,7 @@ class PembelianController extends Controller
             "kode" => $barang->kode,
             "nama" => $barang->nama,
             "jumlah" => 1,
-            "harga_jual" => $barang->harga_jual,
+            "harga_satuan" => $barang->harga_beli,
             ];
             $message = 'Item added to cart!';
         } else {
@@ -213,7 +216,7 @@ class PembelianController extends Controller
             "kode" => $barang->kode,
             "nama" => $barang->nama,
             "jumlah" => 1,
-            "harga_jual" => $barang->harga_jual,
+            "harga_satuan" => $barang->harga_beli,
             ];
             $message = 'Item added to cart!';
         } else {
@@ -251,26 +254,10 @@ class PembelianController extends Controller
         return view('customer.cart');
     }
 
-    public function getDataKategoriBarang() {
-        $datas = Kategori::all();
-        return response()->json(array(
-            'status'=>200,
-            'message' => $datas
-        ), 200);
-    }
-
-    public function getDataListBarang(Request $request) {
-        $datas = Barang::where('kategoris_id', $request->kategori_id)->get();
-        return response()->json(array(
-            'status'=>200,
-            'message' => $datas
-        ), 200);
-    }
-
     public function getDataHargaJual(Barang $barang) {
         return response()->json(array(
             'status'=>200,
-            'message' => $barang->harga_jual
+            'message' => $barang->harga_beli
         ), 200);
     }
 }

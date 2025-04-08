@@ -17,7 +17,6 @@ class CreateBarangsTable extends Migration
             $table->id();
             $table->string('kode', 20);
             $table->string('nama', 200);
-            $table->enum('satuan', ['pcs', 'kg', 'liter']);
             $table->integer('stock');
             $table->integer('harga_beli');
             $table->integer('harga_jual');

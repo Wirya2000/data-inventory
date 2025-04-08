@@ -15,6 +15,7 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenjualanController;
@@ -48,7 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('pembelians/addDetailPembelian/{barang}', [PembelianController::class, 'addDetailPembelian'])->name('pembelians.addDetailPembelian');
     Route::get('barangs/getKodebarang/', [BarangController::class, 'getKodeBarang'])->name('barangs.getKodeBarang');
     Route::get('pembelians/getDataKategoriBarang/', [PembelianController::class, 'getDataKategoriBarang'])->name('pembelians.getDataKategoriBarang');
-    Route::get('pembelians/getDataListBarang/', [PembelianController::class, 'getDataListBarang'])->name('pembelians.getDataListBarang');
+    Route::get('getDataListBarang/', [GlobalController::class, 'getDataListBarang'])->name('getDataListBarang');
     Route::get('pembelians/getDataHargaJual/{barang}', [PembelianController::class, 'getDataHargaJual'])->name('pembelians.getDataHargaJual');
     Route::get('pembelians/updateJumlah/', [PembelianController::class, 'updateJumlah'])->name('pembelians.updateJumlah');
     Route::resource('customers', CustomerController::class);

@@ -7,20 +7,20 @@
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-md-12">
-                <form method="post" action="/pembelians" enctype="multipart/form-data">
+                <form method="post" action="/penjualans" enctype="multipart/form-data">
                     @csrf
                     <div class="card">
                         <div class="card-header pb-0">
                             <div class="d-flex align-items-center">
-                                <h5 class="mb-0">Add Pembelian</h5>
+                                <h5 class="mb-0">Add Penjualan</h5>
                             </div>
                         </div>
                         <div class="card-body">
-                            <p class="text-uppercase text-sm">Pembelian Information</p>
+                            <p class="text-uppercase text-sm">Penjualan Information</p>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Tanggal Pembelian</label>
+                                        <label for="example-text-input" class="form-control-label">Tanggal Penjualan</label>
                                         @error('tanggal_beli')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
@@ -68,7 +68,7 @@
                                     <div class="card mb-4 max-height">
                                         <div class="card-header pb-0">
                                             <h6>Detail Barang</h6>
-                                            <a class="btn btn-primary"  href="javascript:void(0);" onclick="getAddDetailPembelian();">Add Detail</a>
+                                            <a class="btn btn-primary"  href="javascript:void(0);" onclick="getAddDetailPenjualan();">Add Detail</a>
                                             <div id="modalContainer"></div>
                                         </div>
                                         <div class="card-body px-0 pt-0 pb-2">
@@ -127,8 +127,8 @@
                                                                     data-toggle="tooltip" data-original-title="Edit user">
                                                                     Edit
                                                                 </a> --}}
-                                                                {{-- <a href="/pembelians/{{ $data->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
-                                                                <form action="/pembelians/{{ $data->id }}" method="POST" class="d-inline">
+                                                                {{-- <a href="/penjualans/{{ $data->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
+                                                                <form action="/penjualans/{{ $data->id }}" method="POST" class="d-inline">
                                                                     @method('delete')
                                                                     @csrf
                                                                     <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
@@ -163,10 +163,10 @@
 @push('js')
     <script>
         // $(document).ready(function() {
-            function getAddDetailPembelian() {
+            function getAddDetailPenjualan() {
                 $.ajax({
                     type:'POST',
-                    url:'{{ route("pembelians.showAddDetailPembelian") }}',
+                    url:'{{ route("penjualans.showAddDetailPenjualan") }}',
                     data:'_token= <?php echo csrf_token() ?>',
                     success: function(response) {
                         // Ensure we extract the modal content if it's inside 'msg'
@@ -176,7 +176,7 @@
                         $('#modalContainer').html(modalHtml);
 
                         // Show the modal using Bootstrap's modal function
-                        $('#modalAddDetailPembelian').modal('show');
+                        $('#modalAddDetailPenjualan').modal('show');
                         dataKategoriBarang();
                     },
                     error: function(xhr) {
@@ -227,12 +227,12 @@
                 });
             }
 
-            function updateTableDetailPembelian() {
+            function updateTableDetailPenjualan() {
                 var formEl = document.forms.addDetailForm;
                 var formData = new FormData(formEl);
                 $.ajax({
                     type:'POST',
-                    url: `{{ url('pembelians/addDetailPembelian') }}/${document.getElementById('nama_barang').value}`,
+                    url: `{{ url('penjualans/addDetailPenjualan') }}/${document.getElementById('nama_barang').value}`,
                     data:'_token= <?php echo csrf_token() ?>',
                     success: function(data){
                         if (data.status==200){
@@ -282,7 +282,7 @@
                                                     </div>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <form action="/pembelians/`+d.id+`" method="POST" class="d-inline">
+                                                    <form action="/penjualans/`+d.id+`" method="POST" class="d-inline">
                                                         @method('delete')
                                                         @csrf
                                                         <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
@@ -305,7 +305,7 @@
                             }, 5000);
 
                             // $('body').removeClass('modal-open');
-                            $('#modalAddDetailPembelian').modal('hide');
+                            $('#modalAddDetailPenjualan').modal('hide');
                             $('#modalCreate').modal('hide');
 
                         }
@@ -336,7 +336,7 @@
             function updateHarga(barang_id) {
                 $.ajax({
                     type:'GET',
-                    url:`{{ url("pembelians/getDataHargaJual") }}/${document.getElementById('nama_barang').value}`,
+                    url:`{{ url("penjualans/getDataHargaJual") }}/${document.getElementById('nama_barang').value}`,
                     data:{
                         _token: '<?php echo csrf_token() ?>',
                         barang_id: barang_id
@@ -369,7 +369,7 @@
                 // Send AJAX request to update backend
                 $.ajax({
                     type: 'POST',
-                    url: '{{ route("pembelians.updateJumlah") }}',
+                    url: '{{ route("penjualans.updateJumlah") }}',
                     data: {
                         _token: '{{ csrf_token() }}',
                         barang_id: barang_id,

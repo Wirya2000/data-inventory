@@ -89,9 +89,31 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        // DB::table('barangs')->insert([
-        //     'kode' => 'F',
-        //     'nama' => 'KERTAS DLL'
-        // ]);
+        DB::table('satuans')->insert([
+            'nama' => 'PAK 1/4'
+        ]);
+        DB::table('satuans')->insert([
+            'nama' => 'KG'
+        ]);
+        DB::table('satuans')->insert([
+            'nama' => 'PAK'
+        ]);
+        DB::table('satuans')->insert([
+            'nama' => 'SLOP'
+        ]);
+        DB::table('satuans')->insert([
+            'nama' => 'ROL'
+        ]);
+
+
+        DB::table('barangs')->insert([
+            'kategoris_id' => 1,
+            'kode' => 'AAA001',
+            'nama' => 'OPP TL 100 X 60',
+            'stock' => 0,
+            'harga_beli' => 9250,
+            'harga_jual' => 11000,
+            'satuans_id' => 1
+        ]);
     }
 }

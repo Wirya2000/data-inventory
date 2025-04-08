@@ -15,7 +15,7 @@ class CreateBarangHasPembeliansTable extends Migration
     {
         Schema::create('barangs_has_pembelians', function (Blueprint $table) {
             $table->foreignId('barangs_id')->constrained('barangs');
-            $table->foreignId('pembelian_id')->constrained('pembelians');
+            $table->foreignId('pembelians_id')->constrained('pembelians');
             $table->integer('jumlah');
             $table->integer('harga_satuan');
             $table->timestamps();

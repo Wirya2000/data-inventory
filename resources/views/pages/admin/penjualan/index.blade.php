@@ -7,8 +7,8 @@
             <div class="col-12">
                 <div class="card mb-4">
                     <div class="card-header pb-0">
-                        <h6>Pembelian</h6>
-                        <a href="{{ route('pembelians.create') }}" class="btn btn-primary">Add Pembelian</a>
+                        <h6>Penjualan</h6>
+                        <a href="{{ route('penjualans.create') }}" class="btn btn-primary">Add Penjualan</a>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
@@ -62,8 +62,8 @@
                                                 data-toggle="tooltip" data-original-title="Edit user">
                                                 Edit
                                             </a> --}}
-                                            <a href="/pembelians/{{ $data->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
-                                            <form action="/pembelians/{{ $data->id }}" method="POST" class="d-inline">
+                                            <a href="/penjualans/{{ $data->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
+                                            <form action="/penjualans/{{ $data->id }}" method="POST" class="d-inline">
                                                 @method('delete')
                                                 @csrf
                                                 <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
