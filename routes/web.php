@@ -48,10 +48,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('pembelians/showAddDetailPembelian/', [PembelianController::class, 'showAddDetailPembelian'])->name('pembelians.showAddDetailPembelian');
     Route::post('pembelians/addDetailPembelian/{barang}', [PembelianController::class, 'addDetailPembelian'])->name('pembelians.addDetailPembelian');
     Route::get('barangs/getKodebarang/', [BarangController::class, 'getKodeBarang'])->name('barangs.getKodeBarang');
-    Route::get('pembelians/getDataKategoriBarang/', [PembelianController::class, 'getDataKategoriBarang'])->name('pembelians.getDataKategoriBarang');
+    Route::get('getDataKategoriBarang/', [GlobalController::class, 'getDataKategoriBarang'])->name('getDataKategoriBarang');
     Route::get('getDataListBarang/', [GlobalController::class, 'getDataListBarang'])->name('getDataListBarang');
     Route::get('pembelians/getDataHargaJual/{barang}', [PembelianController::class, 'getDataHargaJual'])->name('pembelians.getDataHargaJual');
-    Route::get('pembelians/updateJumlah/', [PembelianController::class, 'updateJumlah'])->name('pembelians.updateJumlah');
+    Route::post('pembelians/updateJumlah/', [PembelianController::class, 'updateJumlah'])->name('pembelians.updateJumlah');
+    Route::post('penjualans/showAddDetailPenjualan/', [PenjualanController::class, 'showAddDetailPenjualan'])->name('penjualans.showAddDetailPenjualan');
+    Route::post('penjualans/updateJumlah/', [PenjualanController::class, 'updateJumlah'])->name('penjualans.updateJumlah');
+    Route::get('penjualans/getDataBarangSelected/{barang}', [PenjualanController::class, 'getDataBarangSelected'])->name('penjualans.getDataBarangSelected');
+    Route::post('penjualans/addDetailPenjualan/{barang}', [PenjualanController::class, 'addDetailPenjualan'])->name('penjualans.addDetailPenjualan');
     Route::resource('customers', CustomerController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('users', UserController::class);

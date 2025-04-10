@@ -32,7 +32,7 @@ class PembelianController extends Controller
      */
     public function create()
     {
-        session()->forget('cart');
+        session()->forget('cart_pembelian');
         return view('pages.admin.pembelian.create', [
             'kategoris' => Kategori::all(),
             'barangs' => Barang::all(),
@@ -54,6 +54,11 @@ class PembelianController extends Controller
         foreach($cart as $id => $detail) {
             $total += $detail['harga_satuan'] * $detail['jumlah'];
             $pembelian->barangs()->attach($id, ['jumlah' => $detail['jumlah'], 'harga_satuan' => $detail['harga_satuan']]);
+
+            $barang = Barang::findOrFail($id); // Find the item
+
+            // Update stock value
+            $barang->stock += $detail['jumlah'];
         }
 
         return $total;
@@ -66,7 +71,7 @@ class PembelianController extends Controller
             'suppliers_id' => 'required'
           ]);
 
-        $cart = session()->get('cart');
+        $cart = session()->get('cart_pembelian');
         $user = Auth::user();
         $p = new Pembelian();
         $p->users_id = $user->id;
@@ -173,7 +178,7 @@ class PembelianController extends Controller
     public function addDetailPembelian(Barang $barang) {
         $message = $this->addToCart($barang->id);
         $data = $barang;
-        $cart = session()->get('cart');
+        $cart = session()->get('cart_pembelian');
         $data['jumlah'] = $cart[$barang->id]['jumlah'];
         return response()->json(array(
             'status'=>200,
@@ -186,7 +191,7 @@ class PembelianController extends Controller
         // $this->authorize('customer-permission');
 
         $barang = Barang::find($id);
-        $cart = session()->get('cart');
+        $cart = session()->get('cart_pembelian');
 
         if(!isset ($cart[$id])) {
             $cart[$id]=[
@@ -200,7 +205,7 @@ class PembelianController extends Controller
             $cart[$id]['jumlah']++;
             $message = 'Item quantity updated!';
         }
-        session()->put('cart', $cart);
+        session()->put('cart_pembelian', $cart);
 
         return $message;
     }
@@ -209,7 +214,7 @@ class PembelianController extends Controller
         // $this->authorize('customer-permission');
 
         $barang = Barang::find($id);
-        $cart = session()->get('cart');
+        $cart = session()->get('cart_pembelian');
 
         if(!isset ($cart[$id])) {
             $cart[$id]=[
@@ -223,7 +228,7 @@ class PembelianController extends Controller
             $cart[$id]['jumlah']++;
             $message = 'Item quantity updated!';
         }
-        session()->put('cart', $cart);
+        session()->put('cart_pembelian', $cart);
 
         return redirect()->back()->with('status', $message);
     }
@@ -231,7 +236,7 @@ class PembelianController extends Controller
     public function removeFromCart(Request $request) {
         // $this->authorize('customer-permission');
 
-        $cart = session()->get('cart');
+        $cart = session()->get('cart_pembelian');
 
         if(isset($cart[$request->get('id')])) {
             session()->forget('cart.' . $request->get('id'));

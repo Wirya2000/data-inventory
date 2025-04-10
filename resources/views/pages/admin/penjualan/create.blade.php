@@ -28,7 +28,7 @@
                                         <input type="date" id="tanggal_beli" name="tanggal_beli" class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Karyawan</label>
                                         @error('kategori')
@@ -46,22 +46,31 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Supplier</label>
+                                        <label for="example-text-input" class="form-control-label">Customer</label>
                                         @error('kategori')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="kategori" placeholder="Kategori" {{ old('kategori') }}> --}}
-                                        <select class="form-select" name="suppliers_id">
-                                            @foreach ($suppliers as $supplier)
-                                            @if (old('suppliers_id') == $supplier->id)
-                                                <option value="{{ $supplier->id }}" selected>{{ $supplier->nama }}</option>
+                                        <select class="form-select" name="customers_id">
+                                            @foreach ($customers as $customer)
+                                            @if (old('customers_id') == $customer->id)
+                                                <option value="{{ $customer->id }}" selected>{{ $customer->nama }}</option>
                                             @else
-                                                <option value="{{ $supplier->id }}">{{ $supplier->nama }}</option>
+                                                <option value="{{ $customer->id }}">{{ $customer->nama }}</option>
                                             @endif
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Nama Customer</label>
+                                        @error('nama_customer')
+                                        <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                        <input class="form-control" type="text" name="nama_customer" placeholder="nama_customer" {{ old('nama_customer') }}>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -333,10 +342,10 @@
                 });
             }
 
-            function updateHarga(barang_id) {
+            function updateBarangSelected(barang_id) {
                 $.ajax({
                     type:'GET',
-                    url:`{{ url("penjualans/getDataHargaJual") }}/${document.getElementById('nama_barang').value}`,
+                    url:`{{ url("penjualans/getDataBarangSelected") }}/${document.getElementById('nama_barang').value}`,
                     data:{
                         _token: '<?php echo csrf_token() ?>',
                         barang_id: barang_id
@@ -344,7 +353,8 @@
                     success: function(data){
                         if (data.status==200){
                             let d = data.message;
-                            $('#harga_barang').val(d);
+                            $('#harga_barang').val(d.harga_jual.toLocaleString());
+                            $('#stock_barang').val(d.stock);
                         }
                     },
                     error: function(xhr){
@@ -354,17 +364,13 @@
 
             $(document).on('change', 'input[id^="input_jumlah_"]', function () {
                 let jumlah = $(this).val(); // Get new jumlah value
-                let id_barang = $(this).data('barang-id'); // Get barang ID
+                let barang_id = $(this).data('barang-id'); // Get barang ID
                 let harga_satuan = $(this).data('harga'); // Get harga
 
                 if (jumlah < 1) {
                     jumlah = 1; // Prevent negative values
                     $(this).val(1);
                 }
-
-                let total_harga = jumlah * harga_satuan; // Calculate new total price
-                $('#subtotal_' + id_barang).text(total_harga.toLocaleString()); // Update UI
-                calculateTotal();
 
                 // Send AJAX request to update backend
                 $.ajax({
@@ -377,6 +383,9 @@
                     },
                     success: function (response) {
                         console.log('Jumlah updated:', response);
+                        let total_harga = jumlah * harga_satuan; // Calculate new total price
+                        $('#subtotal_' + id_barang).text(total_harga.toLocaleString()); // Update UI
+                        calculateTotal();
                     },
                     error: function (xhr) {
                         console.error('Error:', xhr);

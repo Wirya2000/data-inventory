@@ -16,7 +16,7 @@ class CreatePenjualansTable extends Migration
         Schema::create('penjualans', function (Blueprint $table) {
             $table->id();
             $table->dateTime('tanggal');
-            $table->string('nama_pembeli', 45);
+            $table->string('nama_customer', 45);
             $table->integer('total');
             $table->foreignId('users_id')->constrained('users');
             $table->foreignId('customers_id')->constrained('customers');

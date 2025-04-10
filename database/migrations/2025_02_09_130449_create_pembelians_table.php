@@ -15,7 +15,7 @@ class CreatePembeliansTable extends Migration
     {
         Schema::create('pembelians', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('tanggal_beli');
+            $table->dateTime('tanggal');
             $table->integer('total');
             $table->foreignId('suppliers_id')->constrained('suppliers');
             $table->foreignId('users_id')->constrained('users');

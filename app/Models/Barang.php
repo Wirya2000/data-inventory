@@ -24,11 +24,11 @@ class Barang extends Model
 
     public function pembelians()
     {
-        return $this->belongsToMany(Barang::class, 'barangs_has_pembelians', 'barangs_idbarangs', 'pembelians_idpembelians')->withPivot('jumlah','harga_satuan');
+        return $this->belongsToMany(Barang::class, 'barangs_has_pembelians', 'barangs_id', 'pembelians_idpembelians')->withPivot('jumlah','harga_satuan');
     }
 
     public function penjualans()
     {
-        return $this->belongsToMany(Barang::class, 'barangs_has_penjualans', 'barangs_idbarangs', 'penjualans_idpenjualans')->withPivot('jumlah','harga_satuan');
+        return $this->belongsToMany(Barang::class, 'barangs_has_penjualans', 'barangs_idW', 'penjualans_idpenjualans')->withPivot('jumlah','harga_satuan');
     }
 }

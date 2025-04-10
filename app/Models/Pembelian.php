@@ -10,7 +10,7 @@ class Pembelian extends Model
     use HasFactory;
     protected $table = 'pembelians';
     protected $primaryKey = 'id';
-    protected $fillable = ['tanggal_beli', 'total', 'users_id', 'suppliers_id'];
+    protected $fillable = ['tanggal', 'total', 'users_id', 'suppliers_id'];
 
     public function user()
     {

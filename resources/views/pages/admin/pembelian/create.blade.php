@@ -344,7 +344,7 @@
                     success: function(data){
                         if (data.status==200){
                             let d = data.message;
-                            $('#harga_barang').val(d);
+                            $('#harga_barang').val(d.toLocaleString());
                         }
                     },
                     error: function(xhr){
@@ -362,10 +362,6 @@
                     $(this).val(1);
                 }
 
-                let total_harga = jumlah * harga_satuan; // Calculate new total price
-                $('#subtotal_' + id_barang).text(total_harga.toLocaleString()); // Update UI
-                calculateTotal();
-
                 // Send AJAX request to update backend
                 $.ajax({
                     type: 'POST',
@@ -377,6 +373,9 @@
                     },
                     success: function (response) {
                         console.log('Jumlah updated:', response);
+                        let total_harga = jumlah * harga_satuan; // Calculate new total price
+                        $('#subtotal_' + id_barang).text(total_harga.toLocaleString()); // Update UI
+                        calculateTotal();
                     },
                     error: function (xhr) {
                         console.error('Error:', xhr);

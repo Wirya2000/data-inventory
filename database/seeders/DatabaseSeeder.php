@@ -71,6 +71,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
+        DB::table('customers')->insert([
+            'nama' => 'Trial Customer',
+            'alamat' => 'JL. Nginden Intan Raya no A8, Surabaya',
+            'no_telp' => '08121384296',
+            'note' => 'Toko ...'
+        ]);
+
+
         DB::table('kategoris')->insert([
             'kode' => 'AAA',
             'nama' => 'OPP / KANTONGAN'

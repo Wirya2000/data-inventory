@@ -22,9 +22,13 @@
                         <label>Nama Barang</label>
                         <div class="input-group mb-3">
                             {{-- <input type="text" class="form-control" placeholder="Nama Barang" aria-label="Nama Barang" aria-describedby="nama-addon"> --}}
-                            <select name="nama_barang" id="nama_barang" onchange="updateHarga(this.value)" class="form-control combobox-select2">
+                            <select name="nama_barang" id="nama_barang" onchange="updateBarangSelected(this.value)" class="form-control combobox-select2">
                                 <option value="-">Pilih Barang</option>
                             </select>
+                        </div>
+                        <label>Stock Barang</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Stock Barang" aria-label="Stock Barang" aria-describedby="stock-addon" id="stock_barang" readonly>
                         </div>
                         <label>Harga Barang</label>
                         <div class="input-group mb-3">
