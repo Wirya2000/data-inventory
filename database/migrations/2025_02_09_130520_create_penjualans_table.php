@@ -18,6 +18,8 @@ class CreatePenjualansTable extends Migration
             $table->dateTime('tanggal');
             $table->string('nama_customer', 45);
             $table->integer('total');
+            $table->double('discount');
+            $table->double('grand_total');
             $table->foreignId('users_id')->constrained('users');
             $table->foreignId('customers_id')->constrained('customers');
             $table->timestamps();

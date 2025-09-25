@@ -16,6 +16,15 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
                             <p class="text-uppercase text-sm">Penjualan Information</p>
                             <div class="row">
                                 <div class="col-md-12">
@@ -25,7 +34,7 @@
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="tanggal_beli" placeholder="tanggal_beli" {{ old('tanggal_beli') }}> --}}
-                                        <input type="date" id="tanggal_beli" name="tanggal_beli" class="form-control">
+                                        <input type="date" id="tanggal_beli" name="tanggal_beli" class="form-control" value="{{ date('Y-m-d') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -101,55 +110,45 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody id="table-body">
-                                                        {{-- @foreach ($datas as $data) --}}
-                                                        {{-- <tr>
-                                                            <td>
-                                                                <div class="d-flex px-2 py-1">
-                                                                    <div class="d-flex flex-column justify-content-center">
-                                                                        <p class="text-xs text-primary mb-0">{{ $loop->iteration }}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="d-flex px-2 py-1">
-                                                                    <div class="d-flex flex-column justify-content-center">
-                                                                        <p class="text-xs text-primary mb-0">{{ $data->tanggal_beli }}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="d-flex px-2 py-1">
-                                                                    <div class="d-flex flex-column justify-content-center">
-                                                                        <p class="text-xs text-primary mb-0">{{ $data->user->nama }}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="d-flex px-2 py-1">
-                                                                    <div class="d-flex flex-column justify-content-center">
-                                                                        <p class="text-xs text-primary mb-0">{{ $data->supplier->nama }}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td class="align-middle"> --}}
-                                                                {{-- <a href="javascript:;" class="text-secondary font-weight-bold text-xs"
-                                                                    data-toggle="tooltip" data-original-title="Edit user">
-                                                                    Edit
-                                                                </a> --}}
-                                                                {{-- <a href="/penjualans/{{ $data->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
-                                                                <form action="/penjualans/{{ $data->id }}" method="POST" class="d-inline">
-                                                                    @method('delete')
-                                                                    @csrf
-                                                                    <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
-                                                                </form>
-                                                            </td>
-                                                        </tr> --}}
-                                                        {{-- @endforeach --}}
+                                                        @foreach($cart as $id => $item)
+                                                            <tr id="tr_{{ $id }}">
+                                                                <td>{{ $loop->iteration }}</td>
+                                                                <td>{{ $item['kode'] }}</td>
+                                                                <td>{{ $item['nama'] }}</td>
+                                                                <td>{{ number_format($item['harga_satuan'], 0, ',', '.') }}</td>
+                                                                <td>
+                                                                    <input class="form-control"
+                                                                        type="text"
+                                                                        name="input_jumlah_{{ $id }}"
+                                                                        id="input_jumlah_{{ $id }}"
+                                                                        value="{{ $item['jumlah'] }}"
+                                                                        data-barang-id="{{ $id }}"
+                                                                        data-harga="{{ $item['harga_satuan'] }}">
+                                                                </td>
+                                                                <td id="subtotal_{{ $id }}">
+
+                                                                    {{ number_format($item['harga_satuan'] * $item['jumlah'], 0, ',', '.') }}
+                                                                </td>
+                                                                <td>
+                                                                    <button type="button" class="badge bg-danger" onclick="deleteBarang({{ $id }})">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
                                                             <td colspan="5"><strong>Total</strong></td>
                                                             <td><strong id="total_amount">0</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="5"><strong>Discount</strong></td>
+                                                            <td><input type="number" id="discount" name="discount" min="0" max="100" value="0" oninput="calculateGrandTotal();">%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="5"><strong>Grand Total</strong></td>
+                                                            <td><strong id="grand_total">0</strong></td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
@@ -158,7 +157,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button href="{{ route('barangs.create') }}" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -291,11 +290,9 @@
                                                     </div>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <form action="/penjualans/`+d.id+`" method="POST" class="d-inline">
-                                                        @method('delete')
-                                                        @csrf
-                                                        <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
-                                                    </form>
+                                                    <button type="button" class="badge bg-danger border-0" onClick="deleteBarang(` + d.id + `)" data-id="` + d.id + `">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
                                                 </td>
                                             </tr>`;
                                 $('#table-body').append(newData);
@@ -362,6 +359,33 @@
                 });
             }
 
+            function deleteBarang(barang_id) {
+                $.ajax({
+                    type:'DELETE',
+                    url:'removeFromCart/' + barang_id,
+                    data:{
+                        _token: '<?php echo csrf_token() ?>',
+                    },
+                    success: function(data){
+                        if (data.status==200){
+                            let d = data.message;
+                            // $('#harga_barang').val(d.toLocaleString());
+                            $('#tr_' + barang_id).remove();
+                            calculateTotal();
+                        }
+                    },
+                    error: function(xhr){
+                        // ambil message error dari server
+                        let res = xhr.responseJSON;
+                        if (res && res.msg) {
+                            alert("Error: " + res.msg);
+                        } else {
+                            alert("Terjadi kesalahan pada server");
+                        }
+                    }
+                });
+            }
+
             $(document).on('change', 'input[id^="input_jumlah_"]', function () {
                 let jumlah = $(this).val(); // Get new jumlah value
                 let barang_id = $(this).data('barang-id'); // Get barang ID
@@ -382,13 +406,15 @@
                         jumlah: jumlah
                     },
                     success: function (response) {
-                        console.log('Jumlah updated:', response);
+                        // console.log('Jumlah updated:', response);
                         let total_harga = jumlah * harga_satuan; // Calculate new total price
-                        $('#subtotal_' + id_barang).text(total_harga.toLocaleString()); // Update UI
+                        $('#subtotal_' + barang_id).text(total_harga.toLocaleString()); // Update UI
                         calculateTotal();
                     },
                     error: function (xhr) {
                         console.error('Error:', xhr);
+                        alert(xhr.responseJSON?.message || 'Something went wrong');
+                        $('#input_jumlah_' + barang_id).val(xhr.responseJSON.stock);
                     }
                 });
             });
@@ -397,11 +423,24 @@
                 let total = 0;
                 let harga = 0;
                 document.querySelectorAll("[id^='subtotal_']").forEach(cell => {
-                    harga = parseFloat(cell.textContent.replace(/\./g, ''), 10);
+                    harga = parseInt(cell.textContent.replace(/\./g, ''), 10);
                     total += harga;
                 });
                 document.getElementById("total_amount").textContent = total.toLocaleString();
+                calculateGrandTotal();
+            }
+            function calculateGrandTotal() {
+                let grand_total = 0;
+                let totalText = document.getElementById("total_amount").innerText;
+                // hapus semua koma atau titik pemisah ribuan
+                let total = parseFloat(totalText.replace(/[,\.]/g, ''));
+                let discount = document.getElementById("discount").value;
+                grand_total = total - (total*(discount/100.0));
+                document.getElementById("grand_total").textContent = grand_total.toLocaleString();
             }
         // });
+        $(document).ready(function(){
+            calculateTotal();
+        });
     </script>
 @endpush

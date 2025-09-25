@@ -25,7 +25,7 @@
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="tanggal_beli" placeholder="tanggal_beli" {{ old('tanggal_beli') }}> --}}
-                                        <input type="date" id="tanggal_beli" name="tanggal_beli" class="form-control">
+                                        <input type="date" id="tanggal_beli" name="tanggal_beli" class="form-control" value="{{ date('Y-m-d') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -149,7 +149,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button href="{{ route('barangs.create') }}" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -263,30 +263,28 @@
                                                 <td id="td_price_`+d.id+`">
                                                     <div class="d-flex px-2 py-1">
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <p class="text-xs text-primary mb-0">`+d.harga_jual.toLocaleString()+`</p>
+                                                            <p class="text-xs text-primary mb-0">`+d.harga_beli.toLocaleString()+`</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td id="td_quantity_`+d.id+`">
                                                     <div class="d-flex px-2 py-1">
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <input class="form-control" type="text" name="input_jumlah_`+ d.id +`" id="input_jumlah_`+ d.id +`" placeholder="Jumlah" data-barang-id="` + d.id + `" data-harga="` + d.harga_jual + `" value="1">
+                                                            <input class="form-control" type="text" name="input_jumlah_`+ d.id +`" id="input_jumlah_`+ d.id +`" placeholder="Jumlah" data-barang-id="` + d.id + `" data-harga="` + d.harga_beli + `" value="1">
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td id="td_subtotal_`+d.id+`">
                                                     <div class="d-flex px-2 py-1">
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <p class="text-xs" id="subtotal_` + d.id + `" text-primary mb-0">`+d.harga_jual.toLocaleString()+`</p>
+                                                            <p class="text-xs" id="subtotal_` + d.id + `" text-primary mb-0">`+d.harga_beli.toLocaleString()+`</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <form action="/pembelians/`+d.id+`" method="POST" class="d-inline">
-                                                        @method('delete')
-                                                        @csrf
-                                                        <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
-                                                    </form>
+                                                    <button type="button" class="badge bg-danger border-0" onClick="deleteBarang(` + d.id + `)" data-id="` + d.id + `">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
                                                 </td>
                                             </tr>`;
                                 $('#table-body').append(newData);
@@ -294,7 +292,7 @@
                             } else {
                                 let d = data.data;
                                 $(`#input_jumlah_${d.id}`).val(d.jumlah);
-                                let subtotal = d.jumlah * d.harga_jual;
+                                let subtotal = d.jumlah * d.harga_beli;
                                 $(`#subtotal_${d.id}`).html(subtotal.toLocaleString());
                             }
                             // clearInput();
@@ -336,7 +334,7 @@
             function updateHarga(barang_id) {
                 $.ajax({
                     type:'GET',
-                    url:`{{ url("pembelians/getDataHargaJual") }}/${document.getElementById('nama_barang').value}`,
+                    url:`{{ url("pembelians/getDataHargaBeli") }}/${document.getElementById('nama_barang').value}`,
                     data:{
                         _token: '<?php echo csrf_token() ?>',
                         barang_id: barang_id
@@ -352,9 +350,36 @@
                 });
             }
 
+            function deleteBarang(barang_id) {
+                $.ajax({
+                    type:'DELETE',
+                    url:'removeFromCart/' + barang_id,
+                    data:{
+                        _token: '<?php echo csrf_token() ?>',
+                    },
+                    success: function(data){
+                        if (data.status==200){
+                            let d = data.message;
+                            // $('#harga_barang').val(d.toLocaleString());
+                            $('#tr_' + barang_id).remove();
+                            calculateTotal();
+                        }
+                    },
+                    error: function(xhr){
+                        // ambil message error dari server
+                        let res = xhr.responseJSON;
+                        if (res && res.msg) {
+                            alert("Error: " + res.msg);
+                        } else {
+                            alert("Terjadi kesalahan pada server");
+                        }
+                    }
+                });
+            }
+
             $(document).on('change', 'input[id^="input_jumlah_"]', function () {
                 let jumlah = $(this).val(); // Get new jumlah value
-                let id_barang = $(this).data('barang-id'); // Get barang ID
+                let barang_id = $(this).data('barang-id'); // Get barang ID
                 let harga_satuan = $(this).data('harga'); // Get harga
 
                 if (jumlah < 1) {
@@ -374,7 +399,7 @@
                     success: function (response) {
                         console.log('Jumlah updated:', response);
                         let total_harga = jumlah * harga_satuan; // Calculate new total price
-                        $('#subtotal_' + id_barang).text(total_harga.toLocaleString()); // Update UI
+                        $('#subtotal_' + barang_id).text(total_harga.toLocaleString()); // Update UI
                         calculateTotal();
                     },
                     error: function (xhr) {

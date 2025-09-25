@@ -13,12 +13,12 @@
     <div class="collapse navbar-collapse  w-auto h-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="#customerSubmenu" data-bs-toggle="collapse" aria-expanded="false" onclick="event.stopPropagation();">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Customer</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
+                    {{-- <i class="fas fa-chevron-down ms-auto"></i> --}}
                 </a>
                 <ul class="collapse list-unstyled {{ request()->routeIs('customers.*') ? 'show' : '' }}" id="customerSubmenu">
                     <li class="nav-item">
@@ -39,12 +39,12 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="#supplierSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="#supplierSubmenu" data-bs-toggle="collapse" aria-expanded="false" onclick="event.stopPropagation();">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        <i class="ni ni-delivery-fast text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Supplier</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
+                    {{-- <i class="fas fa-chevron-down ms-auto"></i> --}}
                 </a>
                 <ul class="collapse list-unstyled {{ request()->routeIs('suppliers.*') ? 'show' : '' }}" id="supplierSubmenu">
                     <li class="nav-item">
@@ -65,14 +65,14 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="#supplierSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="#karyawanSubmenu" data-bs-toggle="collapse" aria-expanded="false" onclick="event.stopPropagation();">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        <i class="ni ni-badge text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Karyawan</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
+                    {{-- <i class="fas fa-chevron-down ms-auto"></i> --}}
                 </a>
-                <ul class="collapse list-unstyled {{ request()->routeIs('users.*') ? 'show' : '' }}" id="supplierSubmenu">
+                <ul class="collapse list-unstyled {{ request()->routeIs('users.*') ? 'show' : '' }}" id="karyawanSubmenu">
                     <li class="nav-item">
                         <a class="nav-link {{ Route::currentRouteName() == 'users.index' ? 'active' : '' }}" href="{{ route('users.index') }}">
                             List Karyawan
@@ -91,12 +91,12 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="#kategorisSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('kategoris.*') ? 'active' : '' }}" href="#kategorisSubmenu" data-bs-toggle="collapse" aria-expanded="false" onclick="event.stopPropagation();">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Kategoris</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
+                    {{-- <i class="fas fa-chevron-down ms-auto"></i> --}}
                 </a>
                 <ul class="collapse list-unstyled {{ request()->routeIs('kategoris.*') ? 'show' : '' }}" id="kategorisSubmenu">
                     <li class="nav-item">
@@ -117,12 +117,12 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('satuans.*') ? 'active' : '' }}" href="#satuansSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('satuans.*') ? 'active' : '' }}" href="#satuansSubmenu" data-bs-toggle="collapse" aria-expanded="false" onclick="event.stopPropagation();">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        <i class="ni ni-ruler-pencil text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Satuans</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
+                    {{-- <i class="fas fa-chevron-down ms-auto"></i> --}}
                 </a>
                 <ul class="collapse list-unstyled {{ request()->routeIs('satuans.*') ? 'show' : '' }}" id="satuansSubmenu">
                     <li class="nav-item">
@@ -143,12 +143,12 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('barangs.*') ? 'active' : '' }}" href="#barangSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('barangs.*') ? 'active' : '' }}" href="#barangSubmenu" data-bs-toggle="collapse" aria-expanded="false" onclick="event.stopPropagation();">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        <i class="ni ni-box-2 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Barang</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
+                    {{-- <i class="fas fa-chevron-down ms-auto"></i> --}}
                 </a>
                 <ul class="collapse list-unstyled {{ request()->routeIs('barangs.*') ? 'show' : '' }}" id="barangSubmenu">
                     <li class="nav-item">
@@ -169,12 +169,12 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('pembelians.*') ? 'active' : '' }}" href="#pembelianSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('pembelians.*') ? 'active' : '' }}" href="#pembelianSubmenu" data-bs-toggle="collapse" aria-expanded="false" onclick="event.stopPropagation();">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        <i class="ni ni-cart text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Pembelian</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
+                    {{-- <i class="fas fa-chevron-down ms-auto"></i> --}}
                 </a>
                 <ul class="collapse list-unstyled {{ request()->routeIs('pembelians.*') ? 'show' : '' }}" id="pembelianSubmenu">
                     <li class="nav-item">
@@ -195,12 +195,12 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('penjualans.*') ? 'active' : '' }}" href="#penjualanSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('penjualans.*') ? 'active' : '' }}" href="#penjualanSubmenu" data-bs-toggle="collapse" aria-expanded="false" onclick="event.stopPropagation();">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        <i class="ni ni-credit-card text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Penjualan</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
+                    {{-- <i class="fas fa-chevron-down ms-auto"></i> --}}
                 </a>
                 <ul class="collapse list-unstyled {{ request()->routeIs('penjualans.*') ? 'show' : '' }}" id="penjualanSubmenu">
                     <li class="nav-item">
@@ -221,22 +221,42 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="#reportSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="#reportSubmenu" data-bs-toggle="collapse" aria-expanded="false" onclick="event.stopPropagation();">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        <i class="ni ni-chart-pie-35 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Laporan</span>
-                    <i class="fas fa-chevron-down ms-auto"></i>
+                    {{-- <i class="fas fa-chevron-down ms-auto"></i> --}}
                 </a>
                 <ul class="collapse list-unstyled {{ request()->routeIs('reports.*') ? 'show' : '' }}" id="reportSubmenu">
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'reports.index' ? 'active' : '' }}" href="{{ route('reports.index') }}">
-                            Laporan...
+                        <a class="nav-link {{ Route::currentRouteName() == 'reports.penjualanDetail' ? 'active' : '' }}" href="{{ route('reports.penjualanDetail') }}">
+                            Laporan Penjualan Detail
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'reports.create' ? 'active' : '' }}" href="{{ route('reports.create') }}">
-                            Laporan...
+                        <a class="nav-link {{ Route::currentRouteName() == 'reports.penjualanRekap' ? 'active' : '' }}" href="{{ route('reports.penjualanRekap') }}">
+                            Laporan Penjualan Rekap
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'reports.penjualanHarian' ? 'active' : '' }}" href="{{ route('reports.penjualanHarian') }}">
+                            Laporan Penjualan Harian
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'reports.penjualanPerBarang' ? 'active' : '' }}" href="{{ route('reports.penjualanPerBarang') }}">
+                            Laporan Penjualan Per Barang
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'reports.penjualanPerCustomer' ? 'active' : '' }}" href="{{ route('reports.penjualanPerCustomer') }}">
+                            Laporan Penjualan Per Customer
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'reports.penjualanProfitPenjualan' ? 'active' : '' }}" href="{{ route('reports.penjualanProfitPenjualan') }}">
+                            Laporan Profit Penjualan
                         </a>
                     </li>
                     {{-- <li class="nav-item">

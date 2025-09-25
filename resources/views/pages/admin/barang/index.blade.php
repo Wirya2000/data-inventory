@@ -31,7 +31,9 @@
                                             Harga Beli</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Harga Jual</th>
-                                        <th class="text-secondary opacity-7"></th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Action</th>
+                                        {{-- <th class="text-secondary opacity-7">Action</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -75,21 +77,21 @@
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">{{ $data->stock }}</p>
+                                                    <p class="text-xs text-primary mb-0">{{ thousand_separator($data->stock) }}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">{{ $data->harga_beli }}</p>
+                                                    <p class="text-xs text-primary mb-0">{{ currency_format($data->harga_beli) }}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <p class="text-xs text-primary mb-0">{{ $data->harga_jual }}</p>
+                                                    <p class="text-xs text-primary mb-0">{{currency_format( $data->harga_jual) }}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -98,11 +100,15 @@
                                                 data-toggle="tooltip" data-original-title="Edit user">
                                                 Edit
                                             </a> --}}
-                                            <a href="/barangs/{{ $data->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
+                                            <a href="/barangs/{{ $data->id }}/edit" class="badge bg-warning">
+                                                <i class="fas fa-balance-scale"></i>
+                                            </a>
                                             <form action="/barangs/{{ $data->id }}" method="POST" class="d-inline">
                                                 @method('delete')
                                                 @csrf
-                                                <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
+                                                <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>

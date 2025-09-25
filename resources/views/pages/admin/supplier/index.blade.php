@@ -24,7 +24,10 @@
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             No Telp</th>
-                                        <th class="text-secondary opacity-7"></th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Action</th>
+                                        {{-- <th class="text-secondary opacity-7"></th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -63,11 +66,15 @@
                                                 data-toggle="tooltip" data-original-title="Edit user">
                                                 Edit
                                             </a> --}}
-                                            <a href="/customers/{{ $data->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
+                                            <a href="/customers/{{ $data->id }}/edit" class="badge bg-warning">
+                                                <i class="fas fa-balance-scale"></i>
+                                            </a>
                                             <form action="/customers/{{ $data->id }}" method="POST" class="d-inline">
                                                 @method('delete')
                                                 @csrf
-                                                <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
+                                                <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>

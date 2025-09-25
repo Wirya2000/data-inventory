@@ -32,12 +32,15 @@ class PembelianController extends Controller
      */
     public function create()
     {
-        session()->forget('cart_pembelian');
+        if (!session()->has('cart_pembelian')) {
+            session()->put('cart_pembelian', []);
+        }
         return view('pages.admin.pembelian.create', [
             'kategoris' => Kategori::all(),
             'barangs' => Barang::all(),
             'users' => User::where('role', '!=', 'kasir')->get(),
-            'suppliers' => Supplier::all()
+            'suppliers' => Supplier::all(),
+            'cart' => session()->get('cart_pembelian', [])
         ]);
     }
 
@@ -59,6 +62,7 @@ class PembelianController extends Controller
 
             // Update stock value
             $barang->stock += $detail['jumlah'];
+            $barang->save();
         }
 
         return $total;
@@ -66,16 +70,22 @@ class PembelianController extends Controller
 
     public function store(Request $request)
     {
+        $cart = session()->get('cart_pembelian', []);
+
+        if (empty($cart)) {
+            return redirect()->back()->withErrors(['message' => 'Cart masih kosong!']);
+        }
+
         $validatedData = $request->validate([
             'users_id' => 'required',
             'suppliers_id' => 'required'
           ]);
 
-        $cart = session()->get('cart_pembelian');
+        $cart = session()->get('cart_pembelian', []);
         $user = Auth::user();
         $p = new Pembelian();
         $p->users_id = $user->id;
-        $p->tanggal_beli = Carbon::now()->toDateTimeString();
+        $p->tanggal_beli = Carbon::now()->format('Y-m-d');
         $p->total = 0;
         $p->users_id = $validatedData['users_id'];
         $p->suppliers_id = $validatedData['suppliers_id'];
@@ -87,6 +97,8 @@ class PembelianController extends Controller
         $p->save();
 
         // Pembelian::create($validatedData);
+
+        session()->forget('cart_pembelian');
 
         return redirect('/pembelians')->with('success', 'New Pembelian has been added!');
     }
@@ -112,8 +124,9 @@ class PembelianController extends Controller
      */
     public function edit(Pembelian $pembelian)
     {
-        return view('pages.admin.barang.edit', [
-            'data' => $pembelian
+        return view('pages.admin.pembelian.edit', [
+            'data' => $pembelian,
+            'kategories' => Kategori::all(),
         ]);
     }
 
@@ -178,7 +191,7 @@ class PembelianController extends Controller
     public function addDetailPembelian(Barang $barang) {
         $message = $this->addToCart($barang->id);
         $data = $barang;
-        $cart = session()->get('cart_pembelian');
+        $cart = session()->get('cart_pembelian', []);
         $data['jumlah'] = $cart[$barang->id]['jumlah'];
         return response()->json(array(
             'status'=>200,
@@ -191,7 +204,7 @@ class PembelianController extends Controller
         // $this->authorize('customer-permission');
 
         $barang = Barang::find($id);
-        $cart = session()->get('cart_pembelian');
+        $cart = session()->get('cart_pembelian', []);
 
         if(!isset ($cart[$id])) {
             $cart[$id]=[
@@ -210,22 +223,15 @@ class PembelianController extends Controller
         return $message;
     }
 
-    public function updateJumlah($id) {
+    public function updateJumlah(Request $request) {
         // $this->authorize('customer-permission');
 
-        $barang = Barang::find($id);
-        $cart = session()->get('cart_pembelian');
+        $cart = session()->get('cart_pembelian', []);
 
-        if(!isset ($cart[$id])) {
-            $cart[$id]=[
-            "kode" => $barang->kode,
-            "nama" => $barang->nama,
-            "jumlah" => 1,
-            "harga_satuan" => $barang->harga_beli,
-            ];
-            $message = 'Item added to cart!';
+        if(!isset ($cart[$request->barang_id])) {
+            $message = 'Item not in cart!';
         } else {
-            $cart[$id]['jumlah']++;
+            $cart[$request->barang_id]['jumlah'] = $request->jumlah;
             $message = 'Item quantity updated!';
         }
         session()->put('cart_pembelian', $cart);
@@ -233,24 +239,37 @@ class PembelianController extends Controller
         return redirect()->back()->with('status', $message);
     }
 
-    public function removeFromCart(Request $request) {
+    public function removeFromCart($barang_id) {
         // $this->authorize('customer-permission');
 
-        $cart = session()->get('cart_pembelian');
+        $cart = session()->get('cart_pembelian', []);
 
-        if(isset($cart[$request->get('id')])) {
-            session()->forget('cart.' . $request->get('id'));
+        // if(isset($cart[$request->get('id')])) {
+        //     session()->forget('cart.' . $request->get('id'));
+        // } else {
+        //     return response()->json(array(
+        //         'status'=>400,
+        //         'msg' => "Failed to remove barang from cart!"
+        //     ), 400);
+        // }
+
+        // return response()->json(array(
+        //     'status'=>200,
+        //     'msg' => "Barang removed from cart successfully!"
+        // ), 200);
+
+        if(isset($cart[$barang_id])) {
+            session()->forget('cart_pembelian.' . $barang_id);
+            return response()->json(array(
+                'status'=>200,
+                'message' => "Barang removed from cart successfully!"
+            ), 200);
         } else {
             return response()->json(array(
                 'status'=>400,
-                'msg' => "Failed to remove barang from cart!"
+                'message' => "Failed to remove barang from cart!"
             ), 400);
         }
-
-        return response()->json(array(
-            'status'=>200,
-            'msg' => "Barang removed from cart successfully!"
-        ), 200);
     }
 
     public function cart() {
@@ -259,7 +278,7 @@ class PembelianController extends Controller
         return view('customer.cart');
     }
 
-    public function getDataHargaJual(Barang $barang) {
+    public function getDataHargaBeli(Barang $barang) {
         return response()->json(array(
             'status'=>200,
             'message' => $barang->harga_beli

@@ -32,12 +32,15 @@ class PenjualanController extends Controller
      */
     public function create()
     {
-        session()->forget('cart');
+        if (!session()->has('cart_penjualan')) {
+            session()->put('cart_penjualan', []);
+        }
         return view('pages.admin.penjualan.create', [
             'kategoris' => Kategori::all(),
             'barangs' => Barang::all(),
             'users' => User::where('role', '!=', 'kasir')->get(),
-            'customers' => Customer::all()
+            'customers' => Customer::all(),
+            'cart' => session()->get('cart_penjualan', [])
         ]);
     }
 
@@ -76,23 +79,27 @@ class PenjualanController extends Controller
         $validatedData = $request->validate([
             'users_id' => 'required',
             'customers_id' => 'required',
-            'nama_customer' => 'required'
+            'nama_customer' => 'required',
+            'discount' => 'required|numeric',
           ]);
 
-        $cart = session()->get('cart');
+        $cart = session()->get('cart_penjualan');
         $user = Auth::user();
         $p = new Penjualan();
         $p->users_id = $user->id;
         $p->tanggal = Carbon::now()->toDateTimeString();
         $p->total = 0;
+        $p->grand_total = 0;
         $p->users_id = $validatedData['users_id'];
         $p->customers_id = $validatedData['customers_id'];
         $p->nama_customer = $validatedData['nama_customer'];
+        $p->discount = $validatedData['discount'];
         $p->save();
         $penjualan = Penjualan::find($p->id);
 
         $totalPrice = $this->insertBarangTransaction($cart, $penjualan);
         $p->total = $totalPrice;
+        $p->grand_total = $totalPrice - ($totalPrice * ($validatedData['discount']/100.0));
         $p->save();
 
         // Penjualan::create($validatedData);
@@ -184,7 +191,7 @@ class PenjualanController extends Controller
     public function addDetailPenjualan(Barang $barang) {
         $message = $this->addToCart($barang->id);
         $data = $barang;
-        $cart = session()->get('cart');
+        $cart = session()->get('cart_penjualan');
         $data['jumlah'] = $cart[$barang->id]['jumlah'];
         return response()->json(array(
             'status'=>200,
@@ -197,7 +204,7 @@ class PenjualanController extends Controller
         // $this->authorize('customer-permission');
 
         $barang = Barang::find($id);
-        $cart = session()->get('cart');
+        $cart = session()->get('cart_penjualan');
 
         if(!isset ($cart[$id])) {
             $cart[$id]=[
@@ -211,32 +218,79 @@ class PenjualanController extends Controller
             $cart[$id]['jumlah']++;
             $message = 'Item quantity updated!';
         }
-        session()->put('cart', $cart);
+        session()->put('cart_penjualan', $cart);
 
         return $message;
     }
 
-    public function updateJumlah($id) {
+    public function updateJumlah(Request $request) {
         // $this->authorize('customer-permission');
 
-        $barang = Barang::find($id);
-        $cart = session()->get('cart');
+        $cart = session()->get('cart_penjualan');
 
-        if(!isset ($cart[$id])) {
-            $cart[$id]=[
-            "kode" => $barang->kode,
-            "nama" => $barang->nama,
-            "jumlah" => 1,
-            "harga_satuan" => $barang->harga_jual,
-            ];
-            $message = 'Item added to cart!';
-        } else {
-            $cart[$id]['jumlah']++;
-            $message = 'Item quantity updated!';
+        if (!isset($cart[$request->barang_id])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Item not in cart!'
+            ], 400); // HTTP 400 = Bad Request
         }
-        session()->put('cart', $cart);
 
-        return redirect()->back()->with('status', $message);
+        $barang = Barang::find($request->barang_id);
+        if (!$barang) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Barang not found!'
+            ], 404); // Not Found
+        }
+
+        if ($barang->stock >= $request->jumlah) {
+            $cart[$request->barang_id]['jumlah'] = $request->jumlah;
+            session()->put('cart_penjualan', $cart);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Item quantity updated!'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Insufficient stock items! (stock:'. $barang->stock. ')',
+                'stock' => $barang->stock
+            ], 400);
+        }
+    }
+
+    public function removeFromCart($barang_id) {
+        // $this->authorize('customer-permission');
+
+        $cart = session()->get('cart_penjualan');
+
+        // if(isset($cart[$request->get('id')])) {
+        //     session()->forget('cart.' . $request->get('id'));
+        // } else {
+        //     return response()->json(array(
+        //         'status'=>400,
+        //         'msg' => "Failed to remove barang from cart!"
+        //     ), 400);
+        // }
+
+        // return response()->json(array(
+        //     'status'=>200,
+        //     'msg' => "Barang removed from cart successfully!"
+        // ), 200);
+
+        if(isset($cart[$barang_id])) {
+            session()->forget('cart_penjualan.' . $barang_id);
+            return response()->json(array(
+                'status'=>200,
+                'message' => "Barang removed from cart successfully!"
+            ), 200);
+        } else {
+            return response()->json(array(
+                'status'=>400,
+                'message' => "Failed to remove barang from cart!"
+            ), 400);
+        }
     }
 
     public function getDataBarangSelected(Barang $barang) {

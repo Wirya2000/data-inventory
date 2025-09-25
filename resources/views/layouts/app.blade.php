@@ -15,6 +15,7 @@
     <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- Font Awesome Icons -->
+    <link href="{{ asset('vendor/fontawesome/css/all.min.css') }}" rel="stylesheet" />
     {{-- <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script> --}}
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- CSS Files -->
@@ -23,7 +24,25 @@
     <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="{{ asset('assets/js/jquery-3.6.4.min.js') }}"></script>
+    <!-- jQuery UI untuk Datepicker -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ asset('assets/datatables/css/dataTables.bootstrap5.min.css') }}">
+    <script src="{{ asset('assets/datatables/js/dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
+    <!-- DataTables Button -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.1/css/buttons.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/buttons/3.1.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.print.min.js"></script>
+    <!-- Export to Excel & CSV needs JSZip -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Export to PDF needs pdfmake -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
 </head>
 

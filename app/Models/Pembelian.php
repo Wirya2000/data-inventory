@@ -24,6 +24,7 @@ class Pembelian extends Model
 
     public function barangs()
     {
-        return $this->belongsToMany(Barang::class, 'barangs_has_pembelians', 'pembelians_id', 'barangs_id')->withPivot('jumlah','harga_satuan');
+        return $this->belongsToMany(Barang::class, 'barangs_has_pembelians', 'pembelians_id', 'barangs_id')->withPivot('jumlah','harga_satuan')
+        ->withTimestamps();
     }
 }
