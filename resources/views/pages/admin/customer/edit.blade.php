@@ -37,8 +37,14 @@
                                         <input class="form-control @error('no_telp') is-invalid @enderror" id="no_telp" name="no_telp" type="text" placeholder="no_telp" required autofocus value="{{ old('no_telp', $data->no_telp) }}" >
                                     </div>
                                 </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Note</label>
+                                        <input class="form-control @error('note') is-invalid @enderror" id="note" name="note" type="text" placeholder="note" required autofocus value="{{ old('note', $data->note) }}" >
+                                    </div>
+                                </div>
                             </div>
-                            <button href="{{ route('customers.create') }}" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form>

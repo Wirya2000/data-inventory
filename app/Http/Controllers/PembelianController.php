@@ -125,8 +125,11 @@ class PembelianController extends Controller
     public function edit(Pembelian $pembelian)
     {
         return view('pages.admin.pembelian.edit', [
-            'data' => $pembelian,
+            'data' => $pembelian->load('barangs'),
             'kategories' => Kategori::all(),
+            'barangs' => Barang::all(),
+            'users' => User::where('role', '!=', 'kasir')->get(),
+            'suppliers' => Supplier::all(),
         ]);
     }
 

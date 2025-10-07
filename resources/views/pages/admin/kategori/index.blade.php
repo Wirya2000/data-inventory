@@ -56,7 +56,7 @@
                                                 Edit
                                             </a> --}}
                                             <a href="/kategoris/{{ $data->id }}/edit" class="badge bg-warning">
-                                                <i class="fas fa-balance-scale"></i>
+                                                <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             <form action="/kategoris/{{ $data->id }}" method="POST" class="d-inline">
                                                 @method('delete')

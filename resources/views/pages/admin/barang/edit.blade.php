@@ -23,9 +23,9 @@
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Kategori</label>
                                         {{-- <input class="form-control @error('kategori') is-invalid @enderror" id="kategori" name="kategori" type="text" placeholder="Kategori" required autofocus value="{{ old('kategori', $data->kategori->nama) }}" > --}}
-                                        <select class="form-select" name="kategori">
+                                        <select class="form-select" name="kategoris_id">
                                             @foreach ($kategoris as $kategori)
-                                            @if (old('kategori_id', $kategori->kategori_id) == $kategori->id)
+                                            @if (old('kategoris_id', $data->kategoris_id) == $kategori->id)
                                                 <option value="{{ $kategori->id }}" selected>{{ $kategori->nama }}</option>
                                             @else
                                                 <option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
@@ -52,7 +52,7 @@
                                         {{-- <input class="form-control @error('satuan') is-invalid @enderror" id="satuan" name="satuan" type="text" placeholder="Satuan" required autofocus value="{{ old('satuan', $data->satuan->nama) }}" > --}}
                                         <select class="form-select" name="satuans_id">
                                             @foreach ($satuans as $satuan)
-                                            @if (old('satuans_id', $satuan->satuan_id) == $satuan->id)
+                                            @if (old('satuans_id', $data->satuans_id) == $satuan->id)
                                                 <option value="{{ $satuan->id }}" selected>{{ $satuan->nama }}</option>
                                             @else
                                                 <option value="{{ $satuan->id }}">{{ $satuan->nama }}</option>
@@ -74,7 +74,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button tyupe="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form>

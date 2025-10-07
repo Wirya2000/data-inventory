@@ -47,7 +47,7 @@
                                                 Edit
                                             </a> --}}
                                             <a href="/satuans/{{ $data->id }}/edit" class="badge bg-warning">
-                                                <i class="fas fa-balance-scale"></i>
+                                                <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             <form action="/satuans/{{ $data->id }}" method="POST" class="d-inline">
                                                 @method('delete')

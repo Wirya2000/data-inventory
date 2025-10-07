@@ -22,7 +22,6 @@
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Email</th>
-                                        <th class="text-secondary opacity-7"></th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Nama</th>
@@ -99,7 +98,7 @@
                                                 Edit
                                             </a> --}}
                                             <a href="/users/{{ $data->id }}/edit" class="badge bg-warning">
-                                                <i class="fas fa-balance-scale"></i>
+                                                <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             <form action="/users/{{ $data->id }}" method="POST" class="d-inline">
                                                 @method('delete')

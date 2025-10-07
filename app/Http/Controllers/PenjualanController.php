@@ -128,7 +128,13 @@ class PenjualanController extends Controller
      */
     public function edit(Penjualan $penjualan)
     {
-        //
+        return view('pages.admin.penjualan.edit', [
+            'data' => $penjualan->load('barangs'),
+            'kategories' => Kategori::all(),
+            'barangs' => Barang::all(),
+            'users' => User::where('role', '!=', 'kasir')->get(),
+            'customers' => Customer::all(),
+        ]);
     }
 
     /**

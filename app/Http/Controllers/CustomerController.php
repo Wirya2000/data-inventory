@@ -89,6 +89,7 @@ class CustomerController extends Controller
             'nama' => 'required|max:255',
             'alamat' => 'required|max:255',
             'no_telp' => 'required|max:255',
+            'note' => 'required|max:255',
         ]);
 
         $validatedData = $request->validate($rules);

@@ -7,8 +7,8 @@
             <div class="col-12">
                 <div class="card mb-4">
                     <div class="card-header pb-0">
-                        <h6>Customer</h6>
-                        <a href="{{ route('customers.create') }}" class="btn btn-primary">Add Customer</a>
+                        <h6>Supplier</h6>
+                        <a href="{{ route('suppliers.create') }}" class="btn btn-primary">Add Supplier</a>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
@@ -24,6 +24,9 @@
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             No Telp</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Note</th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Action</th>
@@ -61,15 +64,22 @@
                                                 </div>
                                             </div>
                                         </td>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <p class="text-xs text-primary mb-0">{{ $data->note }}</p>
+                                                </div>
+                                            </div>
+                                        </td>
                                         <td class="align-middle">
                                             {{-- <a href="javascript:;" class="text-secondary font-weight-bold text-xs"
                                                 data-toggle="tooltip" data-original-title="Edit user">
                                                 Edit
                                             </a> --}}
-                                            <a href="/customers/{{ $data->id }}/edit" class="badge bg-warning">
-                                                <i class="fas fa-balance-scale"></i>
+                                            <a href="/suppliers/{{ $data->id }}/edit" class="badge bg-warning">
+                                                <i class="fas fa-pencil-alt"></i>
                                             </a>
-                                            <form action="/customers/{{ $data->id }}" method="POST" class="d-inline">
+                                            <form action="/suppliers/{{ $data->id }}" method="POST" class="d-inline">
                                                 @method('delete')
                                                 @csrf
                                                 <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')">

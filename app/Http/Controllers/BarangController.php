@@ -110,14 +110,18 @@ class BarangController extends Controller
     public function update(Request $request, Barang $barang)
     {
         $rules = ([
+            'kategoris_id' => 'required|max:255',
+            'kode' => 'required|max:255',
             'nama' => 'required|max:255',
-            'satuan' => 'required|max:255',
+            'satuans_id' => 'required|max:255',
             // 'stock' => 'required|max:255',
             'harga_beli' => 'required|numeric',
             'harga_jual' => 'required|numeric'
         ]);
 
+        // dd($request);
         $validatedData = $request->validate($rules);
+        // dd("");
 
         Barang::where('id', $barang->id)
             ->update($validatedData);
