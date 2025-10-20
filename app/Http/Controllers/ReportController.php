@@ -43,7 +43,7 @@ class ReportController extends Controller
         // if ($startDate != null && $endDate != null) {
             $laporan = Penjualan::with(['customer', 'barangs'])
             ->whereBetween('tanggal', [$startDate, $endDate])
-            ->select('id', 'tanggal', 'customer_id', 'discount', 'grand_total')
+            ->select('id', 'tanggal', 'customers_id', 'discount', 'grand_total')
             ->get()
             ->map(function ($penjualan) {
                 // hitung total item & subtotal per transaksi
@@ -52,7 +52,7 @@ class ReportController extends Controller
                     return $barang->pivot->jumlah * $barang->pivot->harga_satuan;
                 });
 
-                return [
+                return (object) [
                     'tanggal'      => $penjualan->tanggal,
                     'no_transaksi' => $penjualan->id,
                     'customer'     => $penjualan->customer->nama ?? $penjualan->nama_customer,
@@ -77,14 +77,33 @@ class ReportController extends Controller
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         // if ($startDate != null && $endDate != null) {
-            $laporan = Penjualan::with([
-                    'barangs',
-                    'customer:id,nama',
-                    'user:id,nama'
-                ])
-                ->whereBetween('tanggal', [$startDate, $endDate])
-                ->orderBy('tanggal', 'asc')
-                ->get();
+            $laporan = Penjualan::with('barangs')
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->get()
+            ->groupBy('tanggal')
+            ->map(function ($group) {
+                $jumlahTransaksi = $group->count();
+                $totalBarang = $group->sum(function ($penjualan) {
+                    return $penjualan->barangs->sum('pivot.jumlah');
+                });
+                $totalSubtotal = $group->sum(function ($penjualan) {
+                    return $penjualan->barangs->sum(function ($barang) {
+                        return $barang->pivot->jumlah * $barang->pivot->harga_satuan;
+                    });
+                });
+                $totalDiskon = $group->sum('discount');
+                $totalGrand = $group->sum('grand_total');
+
+                return (object) [
+                    'tanggal' => $group->first()->tanggal,
+                    'jumlah_transaksi' => $jumlahTransaksi,
+                    'total_barang' => $totalBarang,
+                    'total_subtotal' => $totalSubtotal,
+                    'total_diskon' => $totalDiskon,
+                    'total_grand' => $totalGrand,
+                    'rata_rata_transaksi' => $jumlahTransaksi > 0 ? $totalGrand / $jumlahTransaksi : 0,
+                ];
+            })->values();
         // }
 
         return view('pages.admin.laporan.penjualanHarian', compact('laporan', 'startDate', 'endDate'));

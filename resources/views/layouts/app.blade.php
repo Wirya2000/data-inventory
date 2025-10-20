@@ -26,8 +26,8 @@
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet">
     <script src="{{ asset('assets/js/jquery-3.6.4.min.js') }}"></script>
     <!-- jQuery UI untuk Datepicker -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+    {{-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script> --}}
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('assets/datatables/css/dataTables.bootstrap5.min.css') }}">
     <script src="{{ asset('assets/datatables/js/dataTables.min.js') }}"></script>

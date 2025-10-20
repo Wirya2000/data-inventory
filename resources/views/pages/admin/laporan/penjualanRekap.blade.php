@@ -54,9 +54,9 @@
                                         @foreach ($laporan as $penjualan)
                                             <tr>
                                                 <td>{{ $penjualan->tanggal }}</td>
-                                                <td>{{ $penjualan->id }}</td>
-                                                <td>{{ $penjualan->customer->nama ?? $penjualan->nama_customer }}</td>
-                                                <td>{{ $barang->total_item }}</td>
+                                                <td>{{ $penjualan->no_transaksi }}</td>
+                                                <td>{{ $penjualan->customer }}</td>
+                                                <td>{{ $penjualan->total_item }}</td>
                                                 <td>{{ number_format($penjualan->subtotal, 0, ',', '.') }}</td>
                                                 <td>{{ number_format($penjualan->discount, 0, ',', '.') }}</td>
                                                 <td>{{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
