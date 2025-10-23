@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Penjualan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -121,20 +123,23 @@ class ReportController extends Controller
         $endDate   = $request->end_date;
 
         // Jika belum ada filter tanggal, ambil semua
-        $laporan = \DB::table('penjualan_barangs')
-            ->join('penjualans', 'penjualans.id', '=', 'penjualan_barangs.penjualans_id')
-            ->join('barangs', 'barangs.id', '=', 'penjualan_barangs.barangs_id')
-            ->select(
-                'barangs.nama as nama_barang',
-                \DB::raw('SUM(penjualan_barangs.qty) as total_terjual'),
-                \DB::raw('SUM(penjualan_barangs.subtotal) as total_pendapatan')
-            )
-            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('penjualans.tanggal', [$startDate, $endDate]);
-            })
-            ->groupBy('barangs.nama')
-            ->orderByDesc('total_terjual')
-            ->get();
+        $penjualan = Barang::with(['penjualans' => function ($query) use ($startDate, $endDate) {
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]);
+            }
+        }])
+        ->withSum(['penjualans as total_qty' => function ($query) use ($startDate, $endDate) {
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]);
+            }
+        }], 'pivot.qty')
+        ->withSum(['penjualans as total_penjualan' => function ($query) use ($startDate, $endDate) {
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]);
+            }
+        }], DB::raw('pivot.qty * pivot.harga'))
+        ->orderByDesc('total_penjualan')
+        ->get();
 
         return view('reports.penjualanPerBarang', compact('laporan', 'startDate', 'endDate'));
     }
@@ -150,16 +155,23 @@ class ReportController extends Controller
         $endDate   = $request->end_date;
 
         // Query total pembelian per customer
-        $laporan = Customer->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
-        })
-        ->selectRaw('customers_id, COUNT(id) as total_transaksi, SUM(grand_total) as total_pembelian')
-        ->groupBy('customers_id')
+        $laporan = Customer::with(['penjualans' => function ($query) use ($startDate, $endDate) {
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]);
+            }
+        }])
+        ->withSum(['penjualans as total_pembelian' => function ($query) use ($startDate, $endDate) {
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]);
+            }
+        }], 'grand_total')
+        ->withCount(['penjualans as total_transaksi' => function ($query) use ($startDate, $endDate) {
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal', [$startDate, $endDate]);
+            }
+        }])
         ->orderByDesc('total_pembelian')
         ->get();
-
-    // Muat data customer untuk setiap hasil
-    $laporan->load('customer');
 
 
         return view('reports.penjualanPerCustomer', compact('laporan', 'startDate', 'endDate'));

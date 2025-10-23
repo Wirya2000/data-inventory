@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card mb-4">
                     <div class="card-header pb-0">
-                        <h6>Laporan Penjualan Detail</h6>
+                        <h6>Laporan Penjualan Harian</h6>
                         {{-- <a href="{{ route('kategoris.create') }}" class="btn btn-primary">Add Kategori</a> --}}
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
@@ -42,8 +42,8 @@
                                     <thead style="background-color: #fb6340; color: #FFFFFF" class="text-center">
                                         <tr>
                                             <th class="text-uppercase text-xxs font-weight-bolder">Tanggal</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">No Transaksi</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Customer</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder">Jumlah Transaksi</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder">Total Barang Terjual</th>
                                             <th class="text-uppercase text-xxs font-weight-bolder">Barang</th>
                                             <th class="text-uppercase text-xxs font-weight-bolder">Jumlah</th>
                                             <th class="text-uppercase text-xxs font-weight-bolder">Harga Satuan</th>
