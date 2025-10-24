@@ -188,14 +188,37 @@ class ReportController extends Controller
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         // if ($startDate != null && $endDate != null) {
-            $laporan = Penjualan::with([
-                    'barangs',
-                    'customer:id,nama',
-                    'user:id,nama'
-                ])
-                ->whereBetween('tanggal', [$startDate, $endDate])
-                ->orderBy('tanggal', 'asc')
-                ->get();
+            $laporan = Barang::with(['penjualans' => function ($query) use ($startDate, $endDate) {
+                if ($startDate && $endDate) {
+                    $query->whereBetween('tanggal', [$startDate, $endDate]);
+                }
+            }])
+            ->withSum(['penjualans as total_qty' => function ($query) use ($startDate, $endDate) {
+                if ($startDate && $endDate) {
+                    $query->whereBetween('tanggal', [$startDate, $endDate]);
+                }
+            }], 'pivot.qty')
+            ->withSum(['penjualans as total_penjualan' => function ($query) use ($startDate, $endDate) {
+                if ($startDate && $endDate) {
+                    $query->whereBetween('tanggal', [$startDate, $endDate]);
+                }
+            }], DB::raw('pivot.qty * pivot.harga'))
+            ->get()
+            ->map(function ($item) {
+                // Perhitungan profit per barang
+                $totalModal = $item->harga_modal * ($item->total_qty ?? 0);
+                $profit = ($item->total_penjualan ?? 0) - $totalModal;
+
+                return [
+                    'nama' => $item->nama,
+                    'total_qty' => $item->total_qty ?? 0,
+                    'total_penjualan' => $item->total_penjualan ?? 0,
+                    'total_modal' => $totalModal,
+                    'profit' => $profit,
+                ];
+            })
+            ->sortByDesc('profit')
+            ->values();
         // }
 
         return view('pages.admin.laporan.penjualanProfitPenjualan', compact('laporan', 'startDate', 'endDate'));

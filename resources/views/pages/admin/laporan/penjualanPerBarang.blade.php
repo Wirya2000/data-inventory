@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card mb-4">
                     <div class="card-header pb-0">
-                        <h6>Laporan Penjualan Rekap</h6>
+                        <h6>Laporan Penjualan Per Barang</h6>
                         {{-- <a href="{{ route('kategoris.create') }}" class="btn btn-primary">Add Kategori</a> --}}
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
@@ -41,25 +41,19 @@
                                 <table id="table-display" class="table table-striped table-hover table-bordered align-items-center mb-0">
                                     <thead style="background-color: #fb6340; color: #FFFFFF" class="text-center">
                                         <tr>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Tanggal</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">No Transaksi</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Customer</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Total Item</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Subtotal</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Discount</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Grand Total</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder">No</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder">Nama Barang</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder">Total Terjual</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder">Total penjualan (Rp)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($laporan as $penjualan)
                                             <tr>
                                                 <td>{{ $penjualan->tanggal }}</td>
-                                                <td>{{ $penjualan->no_transaksi }}</td>
-                                                <td>{{ $penjualan->customer }}</td>
-                                                <td>{{ $penjualan->total_item }}</td>
-                                                <td>{{ number_format($penjualan->subtotal, 0, ',', '.') }}</td>
-                                                <td>{{ number_format($penjualan->discount, 0, ',', '.') }}</td>
-                                                <td>{{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
+                                                <td>{{ $penjualan->nama }}</td>
+                                                <td>{{ $penjualan->total_qty }}</td>
+                                                <td>{{ number_format($penjualan->total_penjualan, 0, ',', '.') }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
