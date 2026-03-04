@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\DetailPembelian;
+use App\Models\DetailPenjualan;
 use App\Models\DetailPenjualanBatch;
 use App\Models\Kategori;
 use App\Models\Penjualan;
