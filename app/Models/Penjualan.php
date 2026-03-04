@@ -22,9 +22,13 @@ class Penjualan extends Model
         return $this->belongsTo(Customer::class,'customers_id');
     }
 
-    public function barangs()
+    // public function barangs()
+    // {
+    //     return $this->belongsToMany(Barang::class, 'barangs_has_penjualans', 'penjualans_id', 'barangs_id')->withPivot('jumlah','harga_satuan', 'modal_satuan')
+    //     ->withTimestamps();
+    // }
+    public function details()
     {
-        return $this->belongsToMany(Barang::class, 'barangs_has_penjualans', 'penjualans_id', 'barangs_id')->withPivot('jumlah','harga_satuan')
-        ->withTimestamps();
+        return $this->hasMany(DetailPenjualan::class);
     }
 }

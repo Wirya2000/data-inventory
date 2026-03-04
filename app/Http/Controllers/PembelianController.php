@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\DetailPembelian;
 use App\Models\Kategori;
 use App\Models\Pembelian;
 use App\Models\Supplier;
@@ -10,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PembelianController extends Controller
 {
@@ -50,17 +52,26 @@ class PembelianController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function insertBarangTransaction($cart, $pembelian) {
-        // $this->authorize('customer-permission');
-
+    private function insertBarangTransaction($cart, $pembelian)
+    {
         $total = 0;
-        foreach($cart as $id => $detail) {
-            $total += $detail['harga_satuan'] * $detail['jumlah'];
-            $pembelian->barangs()->attach($id, ['jumlah' => $detail['jumlah'], 'harga_satuan' => $detail['harga_satuan']]);
 
-            $barang = Barang::findOrFail($id); // Find the item
+        foreach ($cart as $id => $detail) {
 
-            // Update stock value
+            $subtotal = $detail['harga_satuan'] * $detail['jumlah'];
+            $total += $subtotal;
+
+            // simpan detail pembelian (batch FIFO)
+            DetailPembelian::create([
+                'pembelian_id' => $pembelian->id,
+                'barang_id' => $id,
+                'jumlah' => $detail['jumlah'],
+                'sisa_qty' => $detail['jumlah'], // penting untuk FIFO
+                'harga_satuan' => $detail['harga_satuan']
+            ]);
+
+            // update stok barang
+            $barang = Barang::findOrFail($id);
             $barang->stock += $detail['jumlah'];
             $barang->save();
         }
@@ -79,28 +90,39 @@ class PembelianController extends Controller
         $validatedData = $request->validate([
             'users_id' => 'required',
             'suppliers_id' => 'required'
-          ]);
+        ]);
 
-        $cart = session()->get('cart_pembelian', []);
-        $user = Auth::user();
-        $p = new Pembelian();
-        $p->users_id = $user->id;
-        $p->tanggal_beli = Carbon::now()->format('Y-m-d');
-        $p->total = 0;
-        $p->users_id = $validatedData['users_id'];
-        $p->suppliers_id = $validatedData['suppliers_id'];
-        $p->save();
-        $pembelian = Pembelian::find($p->id);
+        DB::beginTransaction();
 
-        $totalPrice = $this->insertBarangTransaction($cart, $pembelian);
-        $p->total = $totalPrice;
-        $p->save();
+        try {
 
-        // Pembelian::create($validatedData);
+            $pembelian = Pembelian::create([
+                'users_id' => $validatedData['users_id'],
+                'suppliers_id' => $validatedData['suppliers_id'],
+                'tanggal_beli' => now(),
+                'total' => 0
+            ]);
 
-        session()->forget('cart_pembelian');
+            $totalPrice = $this->insertBarangTransaction($cart, $pembelian);
 
-        return redirect('/pembelians')->with('success', 'New Pembelian has been added!');
+            $pembelian->update([
+                'total' => $totalPrice
+            ]);
+
+            DB::commit();
+
+            session()->forget('cart_pembelian');
+
+            return redirect('/pembelians')->with('success', 'Pembelian berhasil disimpan!');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()->withErrors([
+                'message' => 'Terjadi kesalahan: '.$e->getMessage()
+            ]);
+        }
     }
 
     /**

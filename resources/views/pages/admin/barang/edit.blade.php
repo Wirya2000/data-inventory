@@ -2,8 +2,8 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
-    <div class="card shadow-lg mx-4 card-profile-bottom">
-    </div>
+    {{-- <div class="card shadow-lg mx-4 card-profile-bottom">
+    </div> --}}
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-md-12">
@@ -63,10 +63,16 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Minimum Stock</label>
+                                        <input class="form-control @error('minimum_stock') is-invalid @enderror" id="minimum_stock" name="minimum_stock" type="text" placeholder="Harga Beli" required autofocus value="{{ old('minimum_stock', $data->minimum_stock) }}" >
+                                    </div>
+                                </div>
+                                {{-- <div class="col-md-8">
+                                    <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Harga Beli</label>
                                         <input class="form-control @error('harga_beli') is-invalid @enderror" id="harga_beli" name="harga_beli" type="text" placeholder="Harga Beli" required autofocus value="{{ old('harga_beli', $data->harga_beli) }}" >
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Harga Jual</label>

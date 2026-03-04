@@ -28,7 +28,9 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Stock</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Harga Beli</th>
+                                            Minimum Stock</th>
+                                        {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Harga Beli</th> --}}
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Harga Jual</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -78,6 +80,13 @@
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <p class="text-xs text-primary mb-0">{{ thousand_separator($data->stock) }}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <p class="text-xs text-primary mb-0">{{ thousand_separator($data->minimum_stock) }}</p>
                                                 </div>
                                             </div>
                                         </td>

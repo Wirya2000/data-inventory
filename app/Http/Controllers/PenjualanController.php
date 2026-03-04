@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\Customer;
+use App\Models\DetailPembelian;
+use App\Models\DetailPenjualanBatch;
 use App\Models\Kategori;
 use App\Models\Penjualan;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PenjualanController extends Controller
 {
@@ -50,22 +53,42 @@ class PenjualanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function insertBarangTransaction($cart, $penjualan) {
-        // $this->authorize('customer-permission');
-
+    private function insertBarangTransaction($cart, $penjualan)
+    {
         $total = 0;
-        foreach($cart as $id => $detail) {
-            $total += $detail['harga_satuan'] * $detail['jumlah'];
-            $penjualan->barangs()->attach($id, ['jumlah' => $detail['jumlah'], 'harga_satuan' => $detail['harga_satuan']]);
+        $totalModal = 0;
 
-            $barang = Barang::findOrFail($id); // Find the item
+        foreach ($cart as $id => $detail) {
 
-            // Update stock value
+            $subtotal = $detail['harga_satuan'] * $detail['jumlah'];
+            $total += $subtotal;
+
+            $detailPenjualan = DetailPenjualan::create([
+                'penjualan_id' => $penjualan->id,
+                'barang_id' => $id,
+                'jumlah' => $detail['jumlah'],
+                'harga_jual' => $detail['harga_satuan'],
+                'subtotal' => $subtotal,
+                'total_modal' => 0
+            ]);
+
+            $modal = $this->prosesFIFO($id, $detail['jumlah'], $detailPenjualan->id);
+
+            $detailPenjualan->update([
+                'total_modal' => $modal
+            ]);
+
+            $totalModal += $modal;
+
+            $barang = Barang::findOrFail($id);
             $barang->stock -= $detail['jumlah'];
             $barang->save();
         }
 
-        return $total;
+        return [
+            'total' => $total,
+            'modal' => $totalModal
+        ];
     }
 
     /**
@@ -81,30 +104,56 @@ class PenjualanController extends Controller
             'customers_id' => 'required',
             'nama_customer' => 'required',
             'discount' => 'required|numeric',
-          ]);
+        ]);
 
         $cart = session()->get('cart_penjualan');
-        $user = Auth::user();
-        $p = new Penjualan();
-        $p->users_id = $user->id;
-        $p->tanggal = Carbon::now()->toDateTimeString();
-        $p->total = 0;
-        $p->grand_total = 0;
-        $p->users_id = $validatedData['users_id'];
-        $p->customers_id = $validatedData['customers_id'];
-        $p->nama_customer = $validatedData['nama_customer'];
-        $p->discount = $validatedData['discount'];
-        $p->save();
-        $penjualan = Penjualan::find($p->id);
 
-        $totalPrice = $this->insertBarangTransaction($cart, $penjualan);
-        $p->total = $totalPrice;
-        $p->grand_total = $totalPrice - ($totalPrice * ($validatedData['discount']/100.0));
-        $p->save();
+        DB::beginTransaction();
 
-        // Penjualan::create($validatedData);
+        try {
 
-        return redirect('/penjualans')->with('success', 'New Penjualan has been added!');
+            $penjualan = Penjualan::create([
+                'users_id' => $validatedData['users_id'],
+                'customers_id' => $validatedData['customers_id'],
+                'nama_customer' => $validatedData['nama_customer'],
+                'tanggal' => now(),
+                'discount' => $validatedData['discount'],
+                'total' => 0,
+                'grand_total' => 0,
+                'total_modal' => 0,
+                'total_laba' => 0
+            ]);
+
+            $result = $this->insertBarangTransaction($cart, $penjualan);
+
+            $total = $result['total'];
+            $modal = $result['modal'];
+
+            $grandTotal = $total - ($total * ($validatedData['discount']/100));
+
+            $laba = $grandTotal - $modal;
+
+            $penjualan->update([
+                'total' => $total,
+                'grand_total' => $grandTotal,
+                'total_modal' => $modal,
+                'total_laba' => $laba
+            ]);
+
+            DB::commit();
+
+            session()->forget('cart_penjualan');
+
+            return redirect('/penjualans')->with('success', 'Penjualan berhasil disimpan!');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()->withErrors([
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -308,5 +357,45 @@ class PenjualanController extends Controller
             'status'=>200,
             'message' => $data
         ), 200);
+    }
+
+    private function prosesFIFO($barang_id, $qty, $detailPenjualanId)
+    {
+        $totalModal = 0;
+
+        $batches = DetailPembelian::where('barang_id', $barang_id)
+            ->where('sisa_qty', '>', 0)
+            ->orderBy('id', 'asc')
+            ->lockForUpdate()
+            ->get();
+
+        foreach ($batches as $batch) {
+
+            if ($qty <= 0) break;
+
+            $ambil = min($batch->sisa_qty, $qty);
+
+            $subtotalModal = $ambil * $batch->harga_satuan;
+
+            DetailPenjualanBatch::create([
+                'detail_penjualan_id' => $detailPenjualanId,
+                'detail_pembelian_id' => $batch->id,
+                'qty_diambil' => $ambil,
+                'harga_beli' => $batch->harga_satuan,
+                'subtotal_modal' => $subtotalModal
+            ]);
+
+            $batch->sisa_qty -= $ambil;
+            $batch->save();
+
+            $totalModal += $subtotalModal;
+            $qty -= $ambil;
+        }
+
+        if ($qty > 0) {
+            throw new \Exception("Stock batch tidak cukup");
+        }
+
+        return $totalModal;
     }
 }

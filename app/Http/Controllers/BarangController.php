@@ -60,7 +60,8 @@ class BarangController extends Controller
             'kode' => 'required|max:20',
             'nama' => 'required|max:255',
             'satuan' => 'required|max:255',
-            'harga_beli' => 'required|numeric',
+            // 'harga_beli' => 'required|numeric',
+            'minimum_stock' => 'required|numeric',
             'harga_jual' => 'required|numeric',
             'kategoris_id' => 'required',
           ]);
@@ -115,7 +116,8 @@ class BarangController extends Controller
             'nama' => 'required|max:255',
             'satuans_id' => 'required|max:255',
             // 'stock' => 'required|max:255',
-            'harga_beli' => 'required|numeric',
+            'minimum_stock' => 'required|max:255',
+            // 'harga_beli' => 'required|numeric',
             'harga_jual' => 'required|numeric'
         ]);
 

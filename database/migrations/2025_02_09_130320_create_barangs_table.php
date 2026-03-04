@@ -18,8 +18,9 @@ class CreateBarangsTable extends Migration
             $table->string('kode', 20);
             $table->string('nama', 200);
             $table->integer('stock');
-            $table->integer('harga_beli');
-            $table->integer('harga_jual');
+            $table->integer('minimum_stock');
+            // $table->integer('harga_beli');
+            $table->decimal('harga_jual', 15, 2);
             $table->foreignId('kategoris_id')->constrained('kategoris');
             $table->foreignId('satuans_id')->constrained('satuans');
             $table->timestamps();

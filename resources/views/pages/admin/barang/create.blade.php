@@ -2,8 +2,8 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
-    <div class="card shadow-lg mx-4 card-profile-bottom">
-    </div>
+    {{-- <div class="card shadow-lg mx-4 card-profile-bottom">
+    </div> --}}
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-md-12">
@@ -74,13 +74,22 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Minimum Stock</label>
+                                        @error('minimum_stock')
+                                        <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                        <input class="form-control" type="text" name="minimum_stock" placeholder="Harga Beli" value="{{ old('minimum_stock') }}">
+                                    </div>
+                                </div>
+                                {{-- <div class="col-md-8">
+                                    <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Harga Beli</label>
                                         @error('harga_beli')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         <input class="form-control" type="text" name="harga_beli" placeholder="Harga Beli" value="{{ old('harga_beli') }}">
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Harga Jual</label>

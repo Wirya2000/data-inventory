@@ -3,7 +3,7 @@
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
     {{-- <div class="card shadow-lg mx-4 card-profile-bottom"> --}}
-    </div>
+    {{-- </div> --}}
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-md-12">
