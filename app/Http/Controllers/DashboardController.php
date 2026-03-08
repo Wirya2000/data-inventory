@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
-use App\Models\BarangHasPenjualan;
+use App\Models\DetailPenjualan;
 use App\Models\Penjualan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,9 +42,9 @@ class DashboardController extends Controller
             ->sum('grand_total');
 
         // PROFIT dihitung dari pivot (modal_satuan)
-        $totalProfit = BarangHasPenjualan::join('penjualans', 'barangs_has_penjualans.penjualans_id', '=', 'penjualans.id')
+        $totalProfit = DetailPenjualan::join('penjualans', 'detail_penjualans.penjualans_id', '=', 'penjualans.id')
             ->whereBetween('penjualans.tanggal', [$start, $end])
-            ->sum(DB::raw('(barangs_has_penjualans.harga_satuan - barangs_has_penjualans.modal_satuan) * barangs_has_penjualans.jumlah'));
+            ->sum(DB::raw('(detail_penjualans.harga_satuan - detail_penjualans.modal_satuan) * detail_penjualans.jumlah'));
 
         $totalTransaksi = Penjualan::whereBetween('tanggal', [$start, $end])
             ->count();
