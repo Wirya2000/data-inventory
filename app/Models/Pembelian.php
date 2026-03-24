@@ -10,7 +10,7 @@ class Pembelian extends Model
     use HasFactory;
     protected $table = 'pembelians';
     protected $primaryKey = 'id';
-    protected $fillable = ['tanggal', 'total', 'users_id', 'suppliers_id'];
+    protected $fillable = ['tanggal_beli', 'total', 'users_id', 'suppliers_id'];
 
     public function user()
     {
@@ -29,6 +29,6 @@ class Pembelian extends Model
     // }
     public function details()
     {
-        return $this->hasMany(DetailPembelian::class);
+        return $this->hasMany(DetailPembelian::class, 'pembelians_id');
     }
 }

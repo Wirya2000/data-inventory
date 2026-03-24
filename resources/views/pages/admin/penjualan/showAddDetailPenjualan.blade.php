@@ -28,11 +28,11 @@
                         </div>
                         <label>Stock Barang</label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Stock Barang" aria-label="Stock Barang" aria-describedby="stock-addon" id="stock_barang" readonly>
+                            <input type="number" class="form-control" placeholder="Stock Barang" aria-label="Stock Barang" aria-describedby="stock-addon" id="stock_barang" readonly>
                         </div>
                         <label>Harga Barang</label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Harga Barang" aria-label="Harga Barang" aria-describedby="harga-addon" id="harga_barang" readonly>
+                            <input type="number" class="form-control" placeholder="Harga Barang" aria-label="Harga Barang" aria-describedby="harga-addon" id="harga_barang" readonly>
                         </div>
                         {{-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="rememberMe" checked="">

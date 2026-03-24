@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('detail_penjualan_batches', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('detail_penjualan_id')
+            $table->foreignId('detail_penjualans_id')
                 ->constrained('detail_penjualans')
                 ->onDelete('cascade');
 
-            $table->foreignId('detail_pembelian_id')
+            $table->foreignId('detail_pembelians_id')
                 ->constrained('detail_pembelians')
                 ->onDelete('cascade');
             $table->decimal('qty_diambil', 15, 2);

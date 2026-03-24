@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Add Penjualan', 'breadcrumbs' => [['title' => 'List Penjualan', 'url' => route('penjualans.index')]]])
     {{-- <div class="card shadow-lg mx-4 card-profile-bottom"> --}}
     {{-- </div> --}}
     <div class="container-fluid py-4">

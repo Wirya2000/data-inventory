@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Add Barang', 'breadcrumbs' => [['title' => 'List Barang', 'url' => route('barangs.index')]]])
     {{-- <div class="card shadow-lg mx-4 card-profile-bottom">
     </div> --}}
     <div class="container-fluid py-4">
@@ -78,7 +78,7 @@
                                         @error('minimum_stock')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="text" name="minimum_stock" placeholder="Harga Beli" value="{{ old('minimum_stock') }}">
+                                        <input class="form-control" type="number" name="minimum_stock" placeholder="Harga Beli" value="{{ old('minimum_stock') }}">
                                     </div>
                                 </div>
                                 {{-- <div class="col-md-8">
@@ -96,7 +96,7 @@
                                         @error('harga_jual')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="text" name="harga_jual" placeholder="Harga Jual" value="{{ old('harga_jual') }}">
+                                        <input class="form-control" type="number" name="harga_jual" placeholder="Harga Jual" value="{{ old('harga_jual') }}">
                                     </div>
                                 </div>
                             </div>

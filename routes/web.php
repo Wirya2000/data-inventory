@@ -50,9 +50,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Pembelian
     Route::post('pembelians/showAddDetailPembelian/', [PembelianController::class, 'showAddDetailPembelian'])->name('pembelians.showAddDetailPembelian');
-    Route::post('pembelians/addDetailPembelian/{barang}', [PembelianController::class, 'addDetailPembelian'])->name('pembelians.addDetailPembelian');
+    Route::post('pembelians/addDetailPembelian/{barang}&harga_beli={harga_beli}', [PembelianController::class, 'addDetailPembelian'])->name('pembelians.addDetailPembelian');
     Route::get('barangs/getKodebarang/', [BarangController::class, 'getKodeBarang'])->name('barangs.getKodeBarang');
-    Route::get('pembelians/getDataHargaBeli/{barang}', [PembelianController::class, 'getDataHargaBeli'])->name('pembelians.getDataHargaBeli');
+    // Route::get('pembelians/getDataHargaBeli/{barang}', [PembelianController::class, 'getDataHargaBeli'])->name('pembelians.getDataHargaBeli');
     Route::post('pembelians/updateJumlah/', [PembelianController::class, 'updateJumlah'])->name('pembelians.updateJumlah');
     Route::delete('pembelians/removeFromCart/{barang_id}', [PembelianController::class, 'removeFromCart'])->name('pembelians.removeFromCart');
 

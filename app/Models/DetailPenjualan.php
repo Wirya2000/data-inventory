@@ -7,21 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class DetailPenjualan extends Model
 {
     protected $fillable = [
-        'penjualan_id',
-        'barang_id',
+        'penjualans_id',
+        'barangs_id',
         'jumlah',
-        'harga_jual',
+        'harga_satuan',
         'subtotal',
         'total_modal'
     ];
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class);
+        return $this->belongsTo(Barang::class, 'barangs_id');
     }
 
     public function batches()
     {
-        return $this->hasMany(DetailPenjualanBatch::class);
+        return $this->hasMany(DetailPenjualanBatch::class, 'detail_penjualans_id');
     }
 }

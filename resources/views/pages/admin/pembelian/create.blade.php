@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Add Pembelian', 'breadcrumbs' => [['title' => 'List Pembelian', 'url' => route('pembelians.index')]]])
     {{-- <div class="card shadow-lg mx-4 card-profile-bottom"> --}}
     {{-- </div> --}}
     <div class="container-fluid py-4">
@@ -228,11 +228,30 @@
             }
 
             function updateTableDetailPembelian() {
+                let kategori = document.getElementById("kategori_barang").value;
+                let barang   = document.getElementById("nama_barang").value;
+                let harga    = document.getElementById("harga_barang").value;
+
+                if(kategori == "-" || kategori == ""){
+                    alert("Kategori barang harus dipilih");
+                    return;
+                }
+
+                if(barang == "-" || barang == ""){
+                    alert("Barang harus dipilih");
+                    return;
+                }
+
+                if(harga == "" || harga <= 0){
+                    alert("Harga barang tidak valid");
+                    return;
+                }
+
                 var formEl = document.forms.addDetailForm;
                 var formData = new FormData(formEl);
                 $.ajax({
                     type:'POST',
-                    url: `{{ url('pembelians/addDetailPembelian') }}/${document.getElementById('nama_barang').value}`,
+                    url: `{{ url('pembelians/addDetailPembelian') }}/${document.getElementById('nama_barang').value}&harga_beli=${document.getElementById('harga_barang').value}`,
                     data:'_token= <?php echo csrf_token() ?>',
                     success: function(data){
                         if (data.status==200){
@@ -291,7 +310,7 @@
                                 calculateTotal();
                             } else {
                                 let d = data.data;
-                                $(`#input_jumlah_${d.id}`).val(d.jumlah);
+                                $(`#input_jumlah_${d.id}`).val(d.jumlah.toLocaleString());
                                 let subtotal = d.jumlah * d.harga_beli;
                                 $(`#subtotal_${d.id}`).html(subtotal.toLocaleString());
                             }
@@ -331,24 +350,24 @@
                 });
             }
 
-            function updateHarga(barang_id) {
-                $.ajax({
-                    type:'GET',
-                    url:`{{ url("pembelians/getDataHargaBeli") }}/${document.getElementById('nama_barang').value}`,
-                    data:{
-                        _token: '<?php echo csrf_token() ?>',
-                        barang_id: barang_id
-                    },
-                    success: function(data){
-                        if (data.status==200){
-                            let d = data.message;
-                            $('#harga_barang').val(d.toLocaleString());
-                        }
-                    },
-                    error: function(xhr){
-                    }
-                });
-            }
+            // function updateHarga(barang_id) {
+            //     $.ajax({
+            //         type:'GET',
+            //         url:`{{ url("pembelians/getDataHargaBeli") }}/${document.getElementById('nama_barang').value}`,
+            //         data:{
+            //             _token: '<?php echo csrf_token() ?>',
+            //             barang_id: barang_id
+            //         },
+            //         success: function(data){
+            //             if (data.status==200){
+            //                 let d = data.message;
+            //                 $('#harga_barang').val(d.toLocaleString());
+            //             }
+            //         },
+            //         error: function(xhr){
+            //         }
+            //     });
+            // }
 
             function deleteBarang(barang_id) {
                 $.ajax({

@@ -1,14 +1,15 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Edit Pembelian', 'breadcrumbs' => [['title' => 'List Pembelian', 'url' => route('pembelians.index')]]])
     {{-- <div class="card shadow-lg mx-4 card-profile-bottom"> --}}
     {{-- </div> --}}
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-md-12">
-                <form method="post" action="/pembelians" enctype="multipart/form-data">
+                <form method="post" action="/pembelians/{{ $data->id }}" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                     <div class="card">
                         <div class="card-header pb-0">
                             <div class="d-flex align-items-center">
@@ -31,13 +32,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Karyawan</label>
-                                        @error('kategori')
+                                        @error('users_id')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="kategori" placeholder="Kategori" {{ old('kategori') }}> --}}
                                         <select class="form-select" name="users_id">
                                             @foreach ($users as $user)
-                                            @if (old('users_id', $user->id) == $data->users_id)
+                                            @if (old('users_id', $data->users_id) == $user->id)
                                                 <option value="{{ $user->id }}" selected>{{ $user->nama }}</option>
                                             @else
                                                 <option value="{{ $user->id }}">{{ $user->nama }}</option>
@@ -49,13 +50,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Supplier</label>
-                                        @error('kategori')
+                                        @error('suppliers_id')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="kategori" placeholder="Kategori" {{ old('kategori') }}> --}}
                                         <select class="form-select" name="suppliers_id">
                                             @foreach ($suppliers as $supplier)
-                                            @if (old('suppliers_id') == $supplier->id)
+                                            @if (old('suppliers_id', $data->suppliers_id) == $supplier->id)
                                                 <option value="{{ $supplier->id }}" selected>{{ $supplier->nama }}</option>
                                             @else
                                                 <option value="{{ $supplier->id }}">{{ $supplier->nama }}</option>
@@ -68,7 +69,7 @@
                                     <div class="card mb-4 max-height">
                                         <div class="card-header pb-0">
                                             <h6>Detail Barang</h6>
-                                            <a class="btn btn-primary"  href="javascript:void(0);" onclick="getAddDetailPembelian();">Add Detail</a>
+                                            {{-- <a class="btn btn-primary"  href="javascript:void(0);" onclick="getAddDetailPembelian();">Add Detail</a> --}}
                                             <div id="modalContainer"></div>
                                         </div>
                                         <div class="card-body px-0 pt-0 pb-2">
@@ -92,8 +93,8 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody id="table-body">
-                                                        @foreach($data->barangs as $i => $barang)
-                                                            <tr id="tr_{{ $barang->id }}">
+                                                        @foreach($data->details as $i => $detail)
+                                                            <tr id="tr_{{ $detail->barang->id }}">
                                                                 <td>
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
@@ -101,56 +102,57 @@
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_kode_{{ $barang->id }}">
+                                                                <td id="td_kode_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <p class="text-xs text-primary mb-0">{{ $barang->kode }}</p>
+                                                                            <p class="text-xs text-primary mb-0">{{ $detail->barang->kode }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_nama_{{ $barang->id }}">
+                                                                <td id="td_nama_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <p class="text-xs text-primary mb-0">{{ $barang->nama }}</p>
+                                                                            <p class="text-xs text-primary mb-0">{{ $detail->barang->nama }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_price_{{ $barang->id }}">
+                                                                <td id="td_price_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <p class="text-xs text-primary mb-0">{{ number_format($barang->pivot->harga_satuan, 0, ',', '.') }}</p>
+                                                                            <p class="text-xs text-primary mb-0">{{ number_format($detail->harga_satuan, 0, ',', '.') }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_quantity_{{ $barang->id }}">
+                                                                <td id="td_quantity_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <input class="form-control"
+                                                                            <p class="text-xs text-primary mb-0">{{ $detail->jumlah }}</p>
+                                                                            {{-- <input class="form-control"
                                                                                 type="text"
-                                                                                name="jumlah[{{ $barang->id }}]"
-                                                                                id="input_jumlah_{{ $barang->id }}"
+                                                                                name="jumlah[{{ $detail->barang->id }}]"
+                                                                                id="input_jumlah_{{ $detail->barang->id }}"
                                                                                 placeholder="Jumlah"
-                                                                                data-barang-id="{{ $barang->id }}"
-                                                                                data-harga="{{ $barang->pivot->harga_satuan }}"
-                                                                                value="{{ $barang->pivot->jumlah }}">
+                                                                                data-barang-id="{{ $detail->barang->id }}"
+                                                                                data-harga="{{ $detail->harga_satuan }}"
+                                                                                value="{{ $detail->jumlah }}"> --}}
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_subtotal_{{ $barang->id }}">
+                                                                <td id="td_subtotal_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <p class="text-xs" id="subtotal_{{ $barang->id }}">
-                                                                                {{ number_format(($barang->pivot->jumlah*$barang->pivot->harga_satuan), 0, ',', '.') }}
+                                                                            <p class="text-xs" id="subtotal_{{ $detail->barang->id }}">
+                                                                                {{ number_format(($detail->jumlah*$detail->harga_satuan), 0, ',', '.') }}
                                                                             </p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
                                                                 <td class="align-middle">
-                                                                    <button type="button" class="badge bg-danger border-0"
-                                                                            onClick="deleteBarang({{ $barang->id }})"
-                                                                            data-id="{{ $barang->id }}">
+                                                                    {{-- <button type="button" class="badge bg-danger border-0"
+                                                                            onClick="deleteBarang({{ $detail->barang->id }})"
+                                                                            data-id="{{ $detail->barang->id }}">
                                                                         <i class="fas fa-trash"></i>
-                                                                    </button>
+                                                                    </button> --}}
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -167,7 +169,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Edit</button>
                         </div>
                     </div>
                 </form>
@@ -349,24 +351,24 @@
                 });
             }
 
-            function updateHarga(barang_id) {
-                $.ajax({
-                    type:'GET',
-                    url:`{{ url("pembelians/getDataHargaBeli") }}/${document.getElementById('nama_barang').value}`,
-                    data:{
-                        _token: '<?php echo csrf_token() ?>',
-                        barang_id: barang_id
-                    },
-                    success: function(data){
-                        if (data.status==200){
-                            let d = data.message;
-                            $('#harga_barang').val(d.toLocaleString());
-                        }
-                    },
-                    error: function(xhr){
-                    }
-                });
-            }
+            // function updateHarga(barang_id) {
+            //     $.ajax({
+            //         type:'GET',
+            //         url:`{{ url("pembelians/getDataHargaBeli") }}/${document.getElementById('nama_barang').value}`,
+            //         data:{
+            //             _token: '<?php echo csrf_token() ?>',
+            //             barang_id: barang_id
+            //         },
+            //         success: function(data){
+            //             if (data.status==200){
+            //                 let d = data.message;
+            //                 $('#harga_barang').val(d.toLocaleString());
+            //             }
+            //         },
+            //         error: function(xhr){
+            //         }
+            //     });
+            // }
 
             function deleteBarang(barang_id) {
                 $.ajax({
@@ -415,7 +417,7 @@
                         jumlah: jumlah
                     },
                     success: function (response) {
-                        console.log('Jumlah updated:', response);
+                        // console.log('Jumlah updated:', response);
                         let total_harga = jumlah * harga_satuan; // Calculate new total price
                         $('#subtotal_' + barang_id).text(total_harga.toLocaleString()); // Update UI
                         calculateTotal();

@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Edit Barang', 'breadcrumbs' => [['title' => 'List Barang', 'url' => route('barangs.index')]]])
     {{-- <div class="card shadow-lg mx-4 card-profile-bottom">
     </div> --}}
     <div class="container-fluid py-4">
@@ -64,7 +64,7 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Minimum Stock</label>
-                                        <input class="form-control @error('minimum_stock') is-invalid @enderror" id="minimum_stock" name="minimum_stock" type="text" placeholder="Harga Beli" required autofocus value="{{ old('minimum_stock', $data->minimum_stock) }}" >
+                                        <input class="form-control @error('minimum_stock') is-invalid @enderror" id="minimum_stock" name="minimum_stock" type="number" placeholder="Harga Beli" required autofocus value="{{ old('minimum_stock', $data->minimum_stock) }}" >
                                     </div>
                                 </div>
                                 {{-- <div class="col-md-8">
@@ -76,11 +76,11 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Harga Jual</label>
-                                        <input class="form-control @error('harga_jual') is-invalid @enderror" id="harga_jual" name="harga_jual" type="text" placeholder="Harga Jual" required autofocus value="{{ old('harga_jual', $data->harga_jual) }}" >
+                                        <input class="form-control @error('harga_jual') is-invalid @enderror" id="harga_jual" name="harga_jual" type="number" placeholder="Harga Jual" required autofocus value="{{ old('harga_jual', $data->harga_jual) }}" >
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Edit</button>
                         </div>
                     </div>
                 </form>

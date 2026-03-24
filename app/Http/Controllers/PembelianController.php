@@ -34,6 +34,7 @@ class PembelianController extends Controller
      */
     public function create()
     {
+        // Jangan reset cart, hanya inisialisasi jika belum ada
         if (!session()->has('cart_pembelian')) {
             session()->put('cart_pembelian', []);
         }
@@ -58,22 +59,31 @@ class PembelianController extends Controller
 
         foreach ($cart as $id => $detail) {
 
+            // VALIDASI
+            if (!$detail['jumlah'] || $detail['jumlah'] <= 0) {
+                throw new \Exception("Jumlah barang kosong");
+            }
+
+            if (!$detail['harga_satuan'] || $detail['harga_satuan'] <= 0) {
+                throw new \Exception("Harga barang kosong");
+            }
+
+            $barang = Barang::findOrFail($id);
+
             $subtotal = $detail['harga_satuan'] * $detail['jumlah'];
             $total += $subtotal;
 
-            // simpan detail pembelian (batch FIFO)
+            // simpan batch FIFO
             DetailPembelian::create([
-                'pembelian_id' => $pembelian->id,
-                'barang_id' => $id,
+                'pembelians_id' => $pembelian->id,
+                'barangs_id' => $id,
                 'jumlah' => $detail['jumlah'],
-                'sisa_qty' => $detail['jumlah'], // penting untuk FIFO
+                'sisa_qty' => $detail['jumlah'],
                 'harga_satuan' => $detail['harga_satuan']
             ]);
 
-            // update stok barang
-            $barang = Barang::findOrFail($id);
-            $barang->stock += $detail['jumlah'];
-            $barang->save();
+            // update stok
+            $barang->increment('stock', $detail['jumlah']);
         }
 
         return $total;
@@ -95,7 +105,6 @@ class PembelianController extends Controller
         DB::beginTransaction();
 
         try {
-
             $pembelian = Pembelian::create([
                 'users_id' => $validatedData['users_id'],
                 'suppliers_id' => $validatedData['suppliers_id'],
@@ -111,6 +120,7 @@ class PembelianController extends Controller
 
             DB::commit();
 
+
             session()->forget('cart_pembelian');
 
             return redirect('/pembelians')->with('success', 'Pembelian berhasil disimpan!');
@@ -118,7 +128,6 @@ class PembelianController extends Controller
         } catch (\Exception $e) {
 
             DB::rollBack();
-
             return redirect()->back()->withErrors([
                 'message' => 'Terjadi kesalahan: '.$e->getMessage()
             ]);
@@ -147,7 +156,7 @@ class PembelianController extends Controller
     public function edit(Pembelian $pembelian)
     {
         return view('pages.admin.pembelian.edit', [
-            'data' => $pembelian->load('barangs'),
+            'data' => $pembelian->load('details.barang'),
             'kategories' => Kategori::all(),
             'barangs' => Barang::all(),
             'users' => User::where('role', '!=', 'kasir')->get(),
@@ -164,16 +173,29 @@ class PembelianController extends Controller
      */
     public function update(Request $request, Pembelian $pembelian)
     {
-        $rules = ([
-            'tanggal_beli' => 'required|max:255'
-          ]);
+        $rules = [
+            'tanggal_beli' => 'required|date',
+            'users_id' => 'required|exists:users,id',
+            'suppliers_id' => 'required|exists:suppliers,id'
+        ];
 
-          $validatedData = $request->validate($rules);
+        $validatedData = $request->validate($rules);
 
-          Pembelian::where('id', $pembelian->id)
-              ->update($validatedData);
+        DB::beginTransaction();
 
-          return redirect('/pembelians')->with('success', 'Pembelian has been updated!');
+        try {
+            $pembelian->update($validatedData);
+
+            DB::commit();
+
+            return redirect('/pembelians')->with('success', 'Pembelian has been updated!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()->withErrors([
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -213,11 +235,12 @@ class PembelianController extends Controller
         ), 200);
     }
 
-    public function addDetailPembelian(Barang $barang) {
-        $message = $this->addToCart($barang->id);
+    public function addDetailPembelian(Barang $barang, $harga_beli) {
+        $message = $this->addToCart($barang->id, $harga_beli);
         $data = $barang;
         $cart = session()->get('cart_pembelian', []);
         $data['jumlah'] = $cart[$barang->id]['jumlah'];
+        $data['harga_beli'] = $cart[$barang->id]['harga_satuan'];
         return response()->json(array(
             'status'=>200,
             'message' => $message,
@@ -225,7 +248,7 @@ class PembelianController extends Controller
         ), 200);
     }
 
-    public function addToCart($id) {
+    public function addToCart($id, $harga_beli = null) {
         // $this->authorize('customer-permission');
 
         $barang = Barang::find($id);
@@ -236,7 +259,7 @@ class PembelianController extends Controller
             "kode" => $barang->kode,
             "nama" => $barang->nama,
             "jumlah" => 1,
-            "harga_satuan" => $barang->harga_beli,
+            "harga_satuan" => (int)$harga_beli,
             ];
             $message = 'Item added to cart!';
         } else {
@@ -303,10 +326,10 @@ class PembelianController extends Controller
         return view('customer.cart');
     }
 
-    public function getDataHargaBeli(Barang $barang) {
-        return response()->json(array(
-            'status'=>200,
-            'message' => $barang->harga_beli
-        ), 200);
-    }
+    // public function getDataHargaBeli(Barang $barang) {
+    //     return response()->json(array(
+    //         'status'=>200,
+    //         'message' => $barang->harga_beli
+    //     ), 200);
+    // }
 }

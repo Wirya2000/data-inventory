@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Edit Penjualan', 'breadcrumbs' => [['title' => 'List Penjualan', 'url' => route('penjualans.index')]]])
     {{-- <div class="card shadow-lg mx-4 card-profile-bottom"> --}}
     {{-- </div> --}}
     <div class="container-fluid py-4">
@@ -12,7 +12,7 @@
                     <div class="card">
                         <div class="card-header pb-0">
                             <div class="d-flex align-items-center">
-                                <h5 class="mb-0">Add Penjualan</h5>
+                                <h5 class="mb-0">Edit Penjualan</h5>
                             </div>
                         </div>
                         <div class="card-body">
@@ -30,11 +30,11 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Tanggal Penjualan</label>
-                                        @error('tanggal_jual')
+                                        @error('tanggal')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        {{-- <input class="form-control" type="text" name="tanggal_jual" placeholder="tanggal_jual" {{ old('tanggal_jual') }}> --}}
-                                        <input type="date" id="tanggal_jual" name="tanggal_jual" class="form-control" value="{{ old('tanggal_jual', $data->tanggal_jual) }}">
+                                        {{-- <input class="form-control" type="text" name="tanggal" placeholder="tanggal" {{ old('tanggal') }}> --}}
+                                        <input type="date" id="tanggal" name="tanggal" class="form-control" value="{{ old('tanggal', $data->tanggal) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -110,8 +110,8 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody id="table-body">
-                                                        @foreach($data->barangs as $i => $barang)
-                                                            <tr id="tr_{{ $barang->id }}">
+                                                        @foreach($data->details as $i => $detail)
+                                                            <tr id="tr_{{ $detail->barang->id }}">
                                                                 <td>
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
@@ -119,56 +119,57 @@
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_kode_{{ $barang->id }}">
+                                                                <td id="td_kode_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <p class="text-xs text-primary mb-0">{{ $barang->kode }}</p>
+                                                                            <p class="text-xs text-primary mb-0">{{ $detail->barang->kode }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_nama_{{ $barang->id }}">
+                                                                <td id="td_nama_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <p class="text-xs text-primary mb-0">{{ $barang->nama }}</p>
+                                                                            <p class="text-xs text-primary mb-0">{{ $detail->barang->nama }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_price_{{ $barang->id }}">
+                                                                <td id="td_price_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <p class="text-xs text-primary mb-0">{{ number_format($barang->pivot->harga_satuan, 0, ',', '.') }}</p>
+                                                                            <p class="text-xs text-primary mb-0">{{ number_format($detail->harga_satuan, 0, ',', '.') }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_quantity_{{ $barang->id }}">
+                                                                <td id="td_quantity_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <input class="form-control"
+                                                                            <p class="text-xs text-primary mb-0">{{ $detail->jumlah }}</p>
+                                                                            {{-- <input class="form-control"
                                                                                 type="text"
                                                                                 name="jumlah[{{ $barang->id }}]"
                                                                                 id="input_jumlah_{{ $barang->id }}"
                                                                                 placeholder="Jumlah"
                                                                                 data-barang-id="{{ $barang->id }}"
                                                                                 data-harga="{{ $barang->pivot->harga_satuan }}"
-                                                                                value="{{ $barang->pivot->jumlah }}">
+                                                                                value="{{ $barang->pivot->jumlah }}"> --}}
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td id="td_subtotal_{{ $barang->id }}">
+                                                                <td id="td_subtotal_{{ $detail->barang->id }}">
                                                                     <div class="d-flex px-2 py-1">
                                                                         <div class="d-flex flex-column justify-content-center">
-                                                                            <p class="text-xs" id="subtotal_{{ $barang->id }}">
-                                                                                {{ number_format(($barang->pivot->jumlah*$barang->pivot->harga_satuan), 0, ',', '.') }}
+                                                                            <p class="text-xs" id="subtotal_{{ $detail->barang->id }}">
+                                                                                {{ number_format(($detail->jumlah*$detail->harga_satuan), 0, ',', '.') }}
                                                                             </p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
                                                                 <td class="align-middle">
-                                                                    <button type="button" class="badge bg-danger border-0"
-                                                                            onClick="deleteBarang({{ $barang->id }})"
-                                                                            data-id="{{ $barang->id }}">
+                                                                    {{-- <button type="button" class="badge bg-danger border-0"
+                                                                            onClick="deleteBarang({{ $detail->barang->id }})"
+                                                                            data-id="{{ $detail->barang->id }}">
                                                                         <i class="fas fa-trash"></i>
-                                                                    </button>
+                                                                    </button> --}}
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -180,7 +181,9 @@
                                                         </tr>
                                                         <tr>
                                                             <td colspan="5"><strong>Discount</strong></td>
-                                                            <td><input type="number" id="discount" name="discount" min="0" max="100" value="0" oninput="calculateGrandTotal();">%</td>
+                                                            <td>
+                                                                <input disabled type="number" id="discount" name="discount" min="0" max="100" value="{{ old('discount', $data->discount) }}" oninput="calculateGrandTotal();">%
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td colspan="5"><strong>Grand Total</strong></td>
@@ -193,7 +196,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Edit</button>
                         </div>
                     </div>
                 </form>

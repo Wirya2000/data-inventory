@@ -42,9 +42,9 @@ class DashboardController extends Controller
             ->sum('grand_total');
 
         // PROFIT dihitung dari pivot (modal_satuan)
-        $totalProfit = DetailPenjualan::join('penjualans', 'detail_penjualans.penjualans_id', '=', 'penjualans.id')
-            ->whereBetween('penjualans.tanggal', [$start, $end])
-            ->sum(DB::raw('(detail_penjualans.harga_satuan - detail_penjualans.modal_satuan) * detail_penjualans.jumlah'));
+        $totalProfit = DetailPenjualan::join('penjualans','detail_penjualans.id','=','penjualans.id')
+            ->whereBetween('penjualans.tanggal', [$start,$end])
+            ->sum(DB::raw('detail_penjualans.subtotal - detail_penjualans.total_modal'));
 
         $totalTransaksi = Penjualan::whereBetween('tanggal', [$start, $end])
             ->count();
@@ -76,10 +76,10 @@ class DashboardController extends Controller
         // 4. PROFIT BULANAN (12 BULAN)
         // ===============================
 
-        $profitBulanan = BarangHasPenjualan::join('penjualans', 'barangs_has_penjualans.penjualans_id', '=', 'penjualans.id')
+        $profitBulanan = DetailPenjualan::join('penjualans', 'detail_penjualans.id', '=', 'penjualans.id')
             ->select(
                 DB::raw('MONTH(penjualans.tanggal) as bulan'),
-                DB::raw('SUM((barangs_has_penjualans.harga_satuan - barangs_has_penjualans.modal_satuan) * barangs_has_penjualans.jumlah) as total')
+                DB::raw('SUM(detail_penjualans.subtotal - detail_penjualans.total_modal) as total')
             )
             ->whereYear('penjualans.tanggal', Carbon::now()->year)
             ->groupBy(DB::raw('MONTH(penjualans.tanggal)'))
@@ -90,15 +90,15 @@ class DashboardController extends Controller
         // 5. TOP 5 BARANG
         // ===============================
 
-        $topBarang = BarangHasPenjualan::join('penjualans', 'barangs_has_penjualans.penjualans_id', '=', 'penjualans.id')
+        $topBarang = DetailPenjualan::join('penjualans', 'detail_penjualans.penjualans_id', '=', 'penjualans.id')
             ->whereBetween('penjualans.tanggal', [$start, $end])
             ->select(
-                'barangs_has_penjualans.barangs_id',
-                DB::raw('SUM(barangs_has_penjualans.jumlah) as total_qty'),
-                DB::raw('SUM(barangs_has_penjualans.jumlah * barangs_has_penjualans.harga_satuan) as total_penjualan')
+                'detail_penjualans.barangs_id',
+                DB::raw('SUM(detail_penjualans.jumlah) as total_qty'),
+                DB::raw('SUM(detail_penjualans.jumlah * detail_penjualans.harga_satuan) as total_penjualan')
             )
             ->with('barang')
-            ->groupBy('barangs_has_penjualans.barangs_id')
+            ->groupBy('detail_penjualans.barangs_id')
             ->orderByDesc('total_qty')
             ->limit(5)
             ->get();
@@ -119,7 +119,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('dashboard.index', compact(
+        return view('pages.admin.dashboard', compact(
             'totalPenjualan',
             'totalProfit',
             'totalTransaksi',

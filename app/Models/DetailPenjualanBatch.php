@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class DetailPenjualanBatch extends Model
 {
     protected $fillable = [
-        'detail_penjualan_id',
-        'detail_pembelian_id',
+        'detail_penjualans_id',
+        'detail_pembelians_id',
         'qty_diambil',
         'harga_beli',
         'subtotal_modal'

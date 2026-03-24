@@ -15,20 +15,21 @@
                         <label>Kategori Barang</label>
                         <div class="input-group mb-3">
                             {{-- <input type="text" class="form-control" placeholder="Kategori Barang" aria-label="Kategori Barang" aria-describedby="kategori-addon"> --}}
-                            <select name="kategori_barang" id="kategori_barang" onchange="getDataListBarang(this.value)" class="form-control combobox-select2">
+                            <select name="kategori_barang" id="kategori_barang" onchange="getDataListBarang(this.value)" class="form-control combobox-select2" required>
                                 <option value="-">Pilih Kategori Barang</option>
                             </select>
                         </div>
                         <label>Nama Barang</label>
                         <div class="input-group mb-3">
                             {{-- <input type="text" class="form-control" placeholder="Nama Barang" aria-label="Nama Barang" aria-describedby="nama-addon"> --}}
-                            <select name="nama_barang" id="nama_barang" onchange="updateHarga(this.value)" class="form-control combobox-select2">
+                            {{-- <select name="nama_barang" id="nama_barang" onchange="updateHarga(this.value)" class="form-control combobox-select2"> --}}
+                            <select name="nama_barang" id="nama_barang" class="form-control combobox-select2" required>
                                 <option value="-">Pilih Barang</option>
                             </select>
                         </div>
                         <label>Harga Barang</label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Harga Barang" aria-label="Harga Barang" aria-describedby="harga-addon" id="harga_barang" readonly>
+                            <input type="number" class="form-control" placeholder="Harga Barang" aria-label="Harga Barang" aria-describedby="harga-addon" id="harga_barang" required min="1">
                         </div>
                         {{-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="rememberMe" checked="">

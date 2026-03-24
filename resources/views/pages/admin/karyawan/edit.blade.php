@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Profile'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Edit Karyawan', 'breadcrumbs' => [['title' => 'List Karyawan', 'url' => route('karyawans.index')]]])
     {{-- <div class="card shadow-lg mx-4 card-profile-bottom">
     </div> --}}
     <div class="container-fluid py-4">
@@ -74,7 +74,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Edit</button>
                         </div>
                     </div>
                 </form>

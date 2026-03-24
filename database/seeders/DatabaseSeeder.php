@@ -119,9 +119,10 @@ class DatabaseSeeder extends Seeder
             'kode' => 'AAA001',
             'nama' => 'OPP TL 100 X 60',
             'stock' => 0,
-            'harga_beli' => 9250,
+            // 'harga_beli' => 9250,
+            'minimum_stock' => 1,
             'harga_jual' => 11000,
-            'satuans_id' => 1
+            'satuans_id' => 1,
         ]);
     }
 }

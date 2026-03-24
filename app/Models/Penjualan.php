@@ -10,7 +10,8 @@ class Penjualan extends Model
     use HasFactory;
     protected $table = 'penjualans';
     protected $primaryKey = 'id';
-    protected $fillable = ['tanggal', 'nama_customer', 'total'];
+    protected $fillable = ['tanggal', 'nama_customer', 'total', 'users_id', 'customers_id', 'discount', 'grand_total'];
+    protected $dates = ['tanggal'];
 
     public function user()
     {
@@ -22,13 +23,8 @@ class Penjualan extends Model
         return $this->belongsTo(Customer::class,'customers_id');
     }
 
-    // public function barangs()
-    // {
-    //     return $this->belongsToMany(Barang::class, 'barangs_has_penjualans', 'penjualans_id', 'barangs_id')->withPivot('jumlah','harga_satuan', 'modal_satuan')
-    //     ->withTimestamps();
-    // }
     public function details()
     {
-        return $this->hasMany(DetailPenjualan::class);
+        return $this->hasMany(DetailPenjualan::class, 'penjualans_id');
     }
 }
