@@ -206,9 +206,25 @@ class PembelianController extends Controller
      */
     public function destroy(Pembelian $pembelian)
     {
-        Pembelian::destroy($pembelian->id);
+        DB::beginTransaction();
 
-        return redirect('/pembelians')->with('success', 'Pembelian has been deleted!');
+        try {
+            // Delete related DetailPembelian records first
+            DetailPembelian::where('pembelians_id', $pembelian->id)->delete();
+
+            // Then delete the Pembelian
+            $pembelian->delete();
+
+            DB::commit();
+
+            return redirect('/pembelians')->with('success', 'Pembelian has been deleted!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()->withErrors([
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
     }
 
 

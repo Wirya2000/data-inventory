@@ -96,7 +96,7 @@
                                         @error('harga_jual')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="number" name="harga_jual" placeholder="Harga Jual" value="{{ old('harga_jual') }}">
+                                        <input class="form-control" type="text" name="harga_jual" id="harga_jual" placeholder="Harga Jual" value="{{ old('harga_jual') }}">
                                     </div>
                                 </div>
                             </div>
@@ -126,5 +126,32 @@
             }
         });
     }
+
+    // Auto format harga dengan thousand separator
+    document.addEventListener('DOMContentLoaded', function() {
+        const hargaInput = document.getElementById('harga_jual');
+        if (hargaInput) {
+            hargaInput.addEventListener('input', function(e) {
+                // Hapus semua karakter yang bukan angka
+                let value = this.value.replace(/\D/g, '');
+                
+                // Format dengan thousand separator
+                if (value) {
+                    value = parseInt(value, 10).toLocaleString('id-ID');
+                }
+                
+                this.value = value;
+            });
+            
+            // Saat form di-submit, parsing nilai untuk menghilangkan separator
+            const form = hargaInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    let nilai = hargaInput.value.replace(/\D/g, '');
+                    hargaInput.value = nilai;
+                });
+            }
+        }
+    });
 </script>
 @endpush

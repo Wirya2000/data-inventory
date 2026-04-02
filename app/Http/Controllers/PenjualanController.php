@@ -214,9 +214,25 @@ class PenjualanController extends Controller
      */
     public function destroy(Penjualan $penjualan)
     {
-        Penjualan::destroy($penjualan->id);
+        DB::beginTransaction();
 
-        return redirect('/penjualans')->with('success', 'Penjualan has been deleted!');
+        try {
+            // Delete related DetailPenjualan records first (DetailPenjualanBatch will cascade delete)
+            DetailPenjualan::where('penjualans_id', $penjualan->id)->delete();
+
+            // Then delete the Penjualan
+            $penjualan->delete();
+
+            DB::commit();
+
+            return redirect('/penjualans')->with('success', 'Penjualan has been deleted!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()->withErrors([
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function showAddDetailPenjualan(Request $request) {
@@ -282,14 +298,14 @@ class PenjualanController extends Controller
 
         $cart = session()->get('cart_penjualan');
 
-        if (!isset($cart[$request->barangs_id])) {
+        if (!isset($cart[$request->barang_id])) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Item not in cart!'
             ], 400); // HTTP 400 = Bad Request
         }
 
-        $barang = Barang::find($request->barangs_id);
+        $barang = Barang::find($request->barang_id);
         if (!$barang) {
             return response()->json([
                 'status' => 'error',
@@ -298,7 +314,7 @@ class PenjualanController extends Controller
         }
 
         if ($barang->stock >= $request->jumlah) {
-            $cart[$request->barangs_id]['jumlah'] = $request->jumlah;
+            $cart[$request->barang_id]['jumlah'] = $request->jumlah;
             session()->put('cart_penjualan', $cart);
 
             return response()->json([
@@ -314,7 +330,7 @@ class PenjualanController extends Controller
         }
     }
 
-    public function removeFromCart($barangs_id) {
+    public function removeFromCart($barang_id) {
         // $this->authorize('customer-permission');
 
         $cart = session()->get('cart_penjualan');
@@ -333,8 +349,8 @@ class PenjualanController extends Controller
         //     'msg' => "Barang removed from cart successfully!"
         // ), 200);
 
-        if(isset($cart[$barangs_id])) {
-            session()->forget('cart_penjualan.' . $barangs_id);
+        if(isset($cart[$barang_id])) {
+            session()->forget('cart_penjualan.' . $barang_id);
             return response()->json(array(
                 'status'=>200,
                 'message' => "Barang removed from cart successfully!"
@@ -358,11 +374,11 @@ class PenjualanController extends Controller
         ), 200);
     }
 
-    private function prosesFIFO($barangs_id, $qty, $detailPenjualanId)
+    private function prosesFIFO($barang_id, $qty, $detailPenjualanId)
     {
         $totalModal = 0;
 
-        $batches = DetailPembelian::where('barangs_id', $barangs_id)
+        $batches = DetailPembelian::where('barangs_id', $barang_id)
             ->where('sisa_qty', '>', 0)
             ->orderBy('id', 'asc')
             ->lockForUpdate()

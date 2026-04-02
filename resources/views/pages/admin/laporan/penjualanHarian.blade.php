@@ -13,7 +13,7 @@
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="row px-4">
                             <!-- Filter Form -->
-                            <form method="GET" action="{{ route('reports.penjualanDetail') }}" class="mb-3">
+                            <form method="GET" action="{{ route('reports.penjualanHarian') }}" class="mb-3">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
@@ -53,19 +53,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($laporan as $penjualan)
-                                            @foreach ($penjualan->barangs as $barang)
-                                                <tr>
-                                                    <td>{{ $penjualan->tanggal }}</td>
-                                                    <td>{{ $penjualan->id }}</td>
-                                                    <td>{{ $penjualan->customer->nama ?? $penjualan->nama_customer }}</td>
-                                                    <td>{{ $barang->nama }}</td>
-                                                    <td>{{ $barang->pivot->jumlah }}</td>
-                                                    <td>{{ number_format($barang->pivot->harga_satuan, 0, ',', '.') }}</td>
-                                                    <td>{{ number_format($barang->pivot->jumlah * $barang->pivot->harga_satuan, 0, ',', '.') }}</td>
-                                                    <td>{{ number_format($penjualan->discount, 0, ',', '.') }}</td>
-                                                    <td>{{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
-                                                </tr>
+                                        @foreach ($laporan as $harian)
+                                            @foreach ($harian->penjualans as $penjualan)
+                                                @foreach ($penjualan->details as $detail)
+                                                    <tr>
+                                                        <td>{{ $penjualan->tanggal }}</td>
+                                                        <td>{{ $penjualan->id }}</td>
+                                                        <td>{{ $penjualan->customer->nama ?? $penjualan->nama_customer }}</td>
+                                                        <td>{{ $detail->barang->nama }}</td>
+                                                        <td>{{ $detail->jumlah }}</td>
+                                                        <td>{{ number_format($detail->harga_satuan, 0, ',', '.') }}</td>
+                                                        <td>{{ number_format($detail->jumlah * $detail->harga_satuan, 0, ',', '.') }}</td>
+                                                        <td>{{ number_format($penjualan->discount, 0, ',', '.') }}</td>
+                                                        <td>{{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
+                                                    </tr>
+                                                @endforeach
                                             @endforeach
                                         @endforeach
                                     </tbody>

@@ -54,15 +54,15 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($laporan as $penjualan)
-                                            @foreach ($penjualan->barangs as $barang)
+                                            @foreach ($penjualan->details as $detail)
                                                 <tr>
                                                     <td>{{ $penjualan->tanggal }}</td>
                                                     <td>{{ $penjualan->id }}</td>
                                                     <td>{{ $penjualan->customer->nama ?? $penjualan->nama_customer }}</td>
-                                                    <td>{{ $barang->nama }}</td>
-                                                    <td>{{ $barang->pivot->jumlah }}</td>
-                                                    <td>{{ number_format($barang->pivot->harga_satuan, 0, ',', '.') }}</td>
-                                                    <td>{{ number_format($barang->pivot->jumlah * $barang->pivot->harga_satuan, 0, ',', '.') }}</td>
+                                                    <td>{{ $detail->barang->nama }}</td>
+                                                    <td>{{ $detail->jumlah }}</td>
+                                                    <td>{{ number_format($detail->harga_satuan, 0, ',', '.') }}</td>
+                                                    <td>{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                                                     <td>{{ number_format($penjualan->discount, 0, ',', '.') }}</td>
                                                     <td>{{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
                                                 </tr>

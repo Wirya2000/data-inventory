@@ -13,7 +13,7 @@
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="row px-4">
                             <!-- Filter Form -->
-                            <form method="GET" action="{{ route('reports.penjualanRekap') }}" class="mb-3">
+                            <form method="GET" action="{{ route('reports.penjualanProfitPenjualan') }}" class="mb-3">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
@@ -55,14 +55,14 @@
                                             $totalModal = 0;
                                             $totalProfit = 0;
                                         @endphp
-                                        @foreach ($laporan as $penjualan)
+                                        @foreach ($laporan as $index => $penjualan)
                                             @php
-                                                $totalPenjualan += $item['total_penjualan'];
-                                                $totalModal += $item['total_modal'];
-                                                $totalProfit += $item['profit'];
+                                                $totalPenjualan += $penjualan['total_penjualan'];
+                                                $totalModal += $penjualan['total_modal'];
+                                                $totalProfit += $penjualan['profit'];
                                             @endphp
                                             <tr>
-                                                <td>{{ $penjualan->tanggal }}</td>
+                                                <td>{{ $index + 1 }}</td>
                                                 <td>{{ $penjualan['nama'] }}</td>
                                                 <td>{{ $penjualan['total_qty'] }}</td>
                                                 <td>{{ number_format($penjualan['total_penjualan'], 0, ',', '.') }}</td>
@@ -74,7 +74,7 @@
                                     <tfoot>
                                         <tr style="font-weight: bold; background-color: #f6f9fc">
                                             <td colspan="4" class="text-end">TOTAL</td>
-                                            <td>{{ number_format($totalPenjualan), 0, ',', '.') }}</td>
+                                            <td>{{ number_format($totalPenjualan, 0, ',', '.') }}</td>
                                             <td>{{ number_format($totalModal, 0, ',', '.') }}</td>
                                             <td>{{ number_format($totalProfit, 0, ',', '.') }}</td>
                                         </tr>

@@ -68,12 +68,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('penjualans/addDetailPenjualan/{barang}', [PenjualanController::class, 'addDetailPenjualan'])->name('penjualans.addDetailPenjualan');
 
     // Report
-    Route::get('reports.penjualanDetail', [ReportController::class, 'penjualanDetail'])->name('reports.penjualanDetail');
-    Route::get('reports.penjualanRekap', [ReportController::class, 'penjualanRekap'])->name('reports.penjualanRekap');
-    Route::get('reports.penjualanHarian', [ReportController::class, 'penjualanHarian'])->name('reports.penjualanHarian');
-    Route::get('reports.penjualanPerBarang', [ReportController::class, 'penjualanPerBarang'])->name('reports.penjualanPerBarang');
-    Route::get('reports.penjualanPerCustomer', [ReportController::class, 'penjualanPerCustomer'])->name('reports.penjualanPerCustomer');
-    Route::get('reports.penjualanProfitPenjualan', [ReportController::class, 'penjualanProfitPenjualan'])->name('reports.penjualanProfitPenjualan');
+    Route::get('reports/penjualanDetail', [ReportController::class, 'penjualanDetail'])->name('reports.penjualanDetail');
+    Route::get('reports/penjualanRekap', [ReportController::class, 'penjualanRekap'])->name('reports.penjualanRekap');
+    Route::get('reports/penjualanHarian', [ReportController::class, 'penjualanHarian'])->name('reports.penjualanHarian');
+    Route::get('reports/penjualanPerBarang', [ReportController::class, 'penjualanPerBarang'])->name('reports.penjualanPerBarang');
+    Route::get('reports/penjualanPerCustomer', [ReportController::class, 'penjualanPerCustomer'])->name('reports.penjualanPerCustomer');
+    Route::get('reports/penjualanProfitPenjualan', [ReportController::class, 'penjualanProfitPenjualan'])->name('reports.penjualanProfitPenjualan');
 
     Route::resource('customers', CustomerController::class);
     Route::resource('suppliers', SupplierController::class);

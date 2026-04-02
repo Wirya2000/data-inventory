@@ -29,7 +29,7 @@
                         </div>
                         <label>Harga Barang</label>
                         <div class="input-group mb-3">
-                            <input type="number" class="form-control" placeholder="Harga Barang" aria-label="Harga Barang" aria-describedby="harga-addon" id="harga_barang" required min="1">
+                            <input type="text" class="form-control" placeholder="Harga Barang" aria-label="Harga Barang" aria-describedby="harga-addon" id="harga_barang" required>
                         </div>
                         {{-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="rememberMe" checked="">

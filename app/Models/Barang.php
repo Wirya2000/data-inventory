@@ -33,11 +33,11 @@ class Barang extends Model
     // }
     public function detailPembelians()
     {
-        return $this->hasMany(DetailPembelian::class);
+        return $this->hasMany(DetailPembelian::class, 'barangs_id');
     }
 
     public function detailPenjualans()
     {
-        return $this->hasMany(DetailPenjualan::class);
+        return $this->hasMany(DetailPenjualan::class, 'barangs_id');
     }
 }

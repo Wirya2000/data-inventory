@@ -209,6 +209,18 @@
 
 @push('js')
     <script>
+        // Helper function untuk format angka (Indonesian format: 1.000.000,00)
+        function formatCurrency(num) {
+            if (!num && num !== 0) return '0';
+            return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Helper function untuk parse angka yang di-format
+        function parseCurrency(str) {
+            if (!str) return 0;
+            return parseInt(str.toString().replace(/\./g, ''), 10);
+        }
+
         // $(document).ready(function() {
             function getAddDetailPenjualan() {
                 $.ajax({
@@ -310,7 +322,7 @@
                                                 <td id="td_price_`+d.id+`">
                                                     <div class="d-flex px-2 py-1">
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <p class="text-xs text-primary mb-0">`+d.harga_jual.toLocaleString()+`</p>
+                                                            <p class="text-xs text-primary mb-0">`+formatCurrency(d.harga_jual)+`</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -324,7 +336,7 @@
                                                 <td id="td_subtotal_`+d.id+`">
                                                     <div class="d-flex px-2 py-1">
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <p class="text-xs" id="subtotal_` + d.id + `" text-primary mb-0">`+d.harga_jual.toLocaleString()+`</p>
+                                                            <p class="text-xs" id="subtotal_` + d.id + `" text-primary mb-0">`+formatCurrency(d.harga_jual)+`</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -340,7 +352,7 @@
                                 let d = data.data;
                                 $(`#input_jumlah_${d.id}`).val(d.jumlah);
                                 let subtotal = d.jumlah * d.harga_jual;
-                                $(`#subtotal_${d.id}`).html(subtotal.toLocaleString());
+                                $(`#subtotal_${d.id}`).html(formatCurrency(subtotal));
                             }
                             // clearInput();
                             $('#pesan').show();
@@ -389,7 +401,7 @@
                     success: function(data){
                         if (data.status==200){
                             let d = data.message;
-                            $('#harga_barang').val(d.harga_jual.toLocaleString());
+                            $('#harga_barang').val(formatCurrency(d.harga_jual));
                             $('#stock_barang').val(d.stock);
                         }
                     },
@@ -447,7 +459,7 @@
                     success: function (response) {
                         // console.log('Jumlah updated:', response);
                         let total_harga = jumlah * harga_satuan; // Calculate new total price
-                        $('#subtotal_' + barang_id).text(total_harga.toLocaleString()); // Update UI
+                        $('#subtotal_' + barang_id).text(formatCurrency(total_harga)); // Update UI
                         calculateTotal();
                     },
                     error: function (xhr) {
@@ -462,20 +474,20 @@
                 let total = 0;
                 let harga = 0;
                 document.querySelectorAll("[id^='subtotal_']").forEach(cell => {
-                    harga = parseInt(cell.textContent.replace(/\./g, ''), 10);
+                    harga = parseCurrency(cell.textContent);
                     total += harga;
                 });
-                document.getElementById("total_amount").textContent = total.toLocaleString();
+                document.getElementById("total_amount").textContent = formatCurrency(total);
                 calculateGrandTotal();
             }
             function calculateGrandTotal() {
                 let grand_total = 0;
                 let totalText = document.getElementById("total_amount").innerText;
-                // hapus semua koma atau titik pemisah ribuan
-                let total = parseFloat(totalText.replace(/[,\.]/g, ''));
+                // parse angka dengan format Indonesian
+                let total = parseCurrency(totalText);
                 let discount = document.getElementById("discount").value;
                 grand_total = total - (total*(discount/100.0));
-                document.getElementById("grand_total").textContent = grand_total.toLocaleString();
+                document.getElementById("grand_total").textContent = formatCurrency(grand_total);
             }
         // });
         $(document).ready(function(){

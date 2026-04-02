@@ -13,7 +13,7 @@
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="row px-4">
                             <!-- Filter Form -->
-                            <form method="GET" action="{{ route('reports.penjualanRekap') }}" class="mb-3">
+                            <form method="GET" action="{{ route('reports.penjualanPerBarang') }}" class="mb-3">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
@@ -48,9 +48,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($laporan as $penjualan)
+                                        @foreach ($laporan as $index => $penjualan)
                                             <tr>
-                                                <td>{{ $penjualan->tanggal }}</td>
+                                                <td>{{ $index + 1 }}</td>
                                                 <td>{{ $penjualan->nama }}</td>
                                                 <td>{{ $penjualan->total_qty }}</td>
                                                 <td>{{ number_format($penjualan->total_penjualan, 0, ',', '.') }}</td>
@@ -59,10 +59,9 @@
                                     </tbody>
                                     <tfoot>
                                         <tr style="font-weight: bold; background-color: #f6f9fc">
-                                            <td colspan="4" class="text-end">TOTAL</td>
-                                            <td>{{ number_format($laporan->sum('subtotal'), 0, ',', '.') }}</td>
-                                            <td>{{ number_format($laporan->sum('discount'), 0, ',', '.') }}</td>
-                                            <td>{{ number_format($laporan->sum('grand_total'), 0, ',', '.') }}</td>
+                                            <td colspan="2" class="text-end">TOTAL</td>
+                                            <td>{{ $laporan->sum('total_qty') }}</td>
+                                            <td>{{ number_format($laporan->sum('total_penjualan'), 0, ',', '.') }}</td>
                                         </tr>
                                     </tfoot>
                                 </table>

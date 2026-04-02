@@ -20,6 +20,11 @@ class DetailPenjualan extends Model
         return $this->belongsTo(Barang::class, 'barangs_id');
     }
 
+    public function penjualan()
+    {
+        return $this->belongsTo(Penjualan::class, 'penjualans_id');
+    }
+
     public function batches()
     {
         return $this->hasMany(DetailPenjualanBatch::class, 'detail_penjualans_id');

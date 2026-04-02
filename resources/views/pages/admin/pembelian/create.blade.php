@@ -162,6 +162,44 @@
 
 @push('js')
     <script>
+        // Helper function untuk format angka (Indonesian format: 1.000.000,00)
+        function formatCurrency(num) {
+            if (!num && num !== 0) return '0';
+            return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Helper function untuk parse angka yang di-format
+        function parseCurrency(str) {
+            if (!str) return 0;
+            return parseInt(str.toString().replace(/\./g, ''), 10);
+        }
+
+        // Setup auto formatter untuk harga_barang di modal
+        function setupHargaFormatter() {
+            setTimeout(function() {
+                let hargaInput = document.getElementById('harga_barang');
+                if (hargaInput) {
+                    // Hapus event listener lama jika ada
+                    hargaInput.removeEventListener('input', formatHargaInput);
+                    // Tambah event listener baru
+                    hargaInput.addEventListener('input', formatHargaInput);
+                }
+            }, 100);
+        }
+
+        // Function untuk format harga saat input
+        function formatHargaInput(e) {
+            // Hapus semua karakter yang bukan angka
+            let value = this.value.replace(/\D/g, '');
+
+            // Format dengan thousand separator
+            if (value) {
+                value = parseInt(value, 10).toLocaleString('id-ID');
+            }
+
+            this.value = value;
+        }
+
         // $(document).ready(function() {
             function getAddDetailPembelian() {
                 $.ajax({
@@ -178,6 +216,9 @@
                         // Show the modal using Bootstrap's modal function
                         $('#modalAddDetailPembelian').modal('show');
                         dataKategoriBarang();
+
+                        // Setup auto formatter untuk harga_barang
+                        setupHargaFormatter();
                     },
                     error: function(xhr) {
                         console.error("Error loading modal:", xhr.responseText);
@@ -230,7 +271,7 @@
             function updateTableDetailPembelian() {
                 let kategori = document.getElementById("kategori_barang").value;
                 let barang   = document.getElementById("nama_barang").value;
-                let harga    = document.getElementById("harga_barang").value;
+                let harga    = document.getElementById("harga_barang").value.replace(/\D/g, ''); // Parse angka saja
 
                 if(kategori == "-" || kategori == ""){
                     alert("Kategori barang harus dipilih");
@@ -251,7 +292,7 @@
                 var formData = new FormData(formEl);
                 $.ajax({
                     type:'POST',
-                    url: `{{ url('pembelians/addDetailPembelian') }}/${document.getElementById('nama_barang').value}&harga_beli=${document.getElementById('harga_barang').value}`,
+                    url: `{{ url('pembelians/addDetailPembelian') }}/${document.getElementById('nama_barang').value}&harga_beli=${harga}`,
                     data:'_token= <?php echo csrf_token() ?>',
                     success: function(data){
                         if (data.status==200){
@@ -282,7 +323,7 @@
                                                 <td id="td_price_`+d.id+`">
                                                     <div class="d-flex px-2 py-1">
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <p class="text-xs text-primary mb-0">`+d.harga_beli.toLocaleString()+`</p>
+                                                            <p class="text-xs text-primary mb-0">`+formatCurrency(d.harga_beli)+`</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -296,7 +337,7 @@
                                                 <td id="td_subtotal_`+d.id+`">
                                                     <div class="d-flex px-2 py-1">
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <p class="text-xs" id="subtotal_` + d.id + `" text-primary mb-0">`+d.harga_beli.toLocaleString()+`</p>
+                                                            <p class="text-xs" id="subtotal_` + d.id + `" text-primary mb-0">`+formatCurrency(d.harga_beli)+`</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -310,9 +351,9 @@
                                 calculateTotal();
                             } else {
                                 let d = data.data;
-                                $(`#input_jumlah_${d.id}`).val(d.jumlah.toLocaleString());
+                                $(`#input_jumlah_${d.id}`).val(d.jumlah);
                                 let subtotal = d.jumlah * d.harga_beli;
-                                $(`#subtotal_${d.id}`).html(subtotal.toLocaleString());
+                                $(`#subtotal_${d.id}`).html(formatCurrency(subtotal));
                             }
                             // clearInput();
                             $('#pesan').show();
@@ -418,7 +459,7 @@
                     success: function (response) {
                         console.log('Jumlah updated:', response);
                         let total_harga = jumlah * harga_satuan; // Calculate new total price
-                        $('#subtotal_' + barang_id).text(total_harga.toLocaleString()); // Update UI
+                        $('#subtotal_' + barang_id).text(formatCurrency(total_harga)); // Update UI
                         calculateTotal();
                     },
                     error: function (xhr) {
@@ -431,10 +472,10 @@
                 let total = 0;
                 let harga = 0;
                 document.querySelectorAll("[id^='subtotal_']").forEach(cell => {
-                    harga = parseFloat(cell.textContent.replace(/\./g, ''), 10);
+                    harga = parseCurrency(cell.textContent);
                     total += harga;
                 });
-                document.getElementById("total_amount").textContent = total.toLocaleString();
+                document.getElementById("total_amount").textContent = formatCurrency(total);
             }
         // });
     </script>

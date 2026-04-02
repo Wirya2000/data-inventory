@@ -22,7 +22,7 @@ class ReportController extends Controller
         $endDate = $request->end_date;
         // if ($startDate != null && $endDate != null) {
             $laporan = Penjualan::with([
-                    'barangs',
+                    'details.barang',
                     'customer:id,nama',
                     'user:id,nama'
                 ])
@@ -44,15 +44,15 @@ class ReportController extends Controller
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         // if ($startDate != null && $endDate != null) {
-            $laporan = Penjualan::with(['customer', 'barangs'])
+            $laporan = Penjualan::with(['customer', 'details'])
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->select('id', 'tanggal', 'customers_id', 'discount', 'grand_total')
             ->get()
             ->map(function ($penjualan) {
                 // hitung total item & subtotal per transaksi
-                $totalItem = $penjualan->barangs->sum('pivot.jumlah');
-                $subtotal = $penjualan->barangs->sum(function ($barang) {
-                    return $barang->pivot->jumlah * $barang->pivot->harga_satuan;
+                $totalItem = $penjualan->details->sum('jumlah');
+                $subtotal = $penjualan->details->sum(function ($detail) {
+                    return $detail->jumlah * $detail->harga_satuan;
                 });
 
                 return (object) [
@@ -80,18 +80,18 @@ class ReportController extends Controller
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         // if ($startDate != null && $endDate != null) {
-            $laporan = Penjualan::with('barangs')
+            $laporan = Penjualan::with('details')
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->get()
             ->groupBy('tanggal')
             ->map(function ($group) {
                 $jumlahTransaksi = $group->count();
                 $totalBarang = $group->sum(function ($penjualan) {
-                    return $penjualan->barangs->sum('pivot.jumlah');
+                    return $penjualan->details->sum('jumlah');
                 });
                 $totalSubtotal = $group->sum(function ($penjualan) {
-                    return $penjualan->barangs->sum(function ($barang) {
-                        return $barang->pivot->jumlah * $barang->pivot->harga_satuan;
+                    return $penjualan->details->sum(function ($detail) {
+                        return $detail->jumlah * $detail->harga_satuan;
                     });
                 });
                 $totalDiskon = $group->sum('discount');
@@ -105,6 +105,7 @@ class ReportController extends Controller
                     'total_diskon' => $totalDiskon,
                     'total_grand' => $totalGrand,
                     'rata_rata_transaksi' => $jumlahTransaksi > 0 ? $totalGrand / $jumlahTransaksi : 0,
+                    'penjualans' => $group,
                 ];
             })->values();
         // }
@@ -123,25 +124,40 @@ class ReportController extends Controller
         $endDate   = $request->end_date;
 
         // Jika belum ada filter tanggal, ambil semua
-        $penjualan = Barang::with(['penjualans' => function ($query) use ($startDate, $endDate) {
+        $laporan = Barang::with(['detailPenjualans' => function ($query) use ($startDate, $endDate) {
             if ($startDate && $endDate) {
-                $query->whereBetween('tanggal', [$startDate, $endDate]);
+                $query->whereHas('penjualan', function ($q) use ($startDate, $endDate) {
+                    $q->whereBetween('tanggal', [$startDate, $endDate]);
+                });
             }
         }])
-        ->withSum(['penjualans as total_qty' => function ($query) use ($startDate, $endDate) {
-            if ($startDate && $endDate) {
-                $query->whereBetween('tanggal', [$startDate, $endDate]);
-            }
-        }], 'pivot.qty')
-        ->withSum(['penjualans as total_penjualan' => function ($query) use ($startDate, $endDate) {
-            if ($startDate && $endDate) {
-                $query->whereBetween('tanggal', [$startDate, $endDate]);
-            }
-        }], DB::raw('pivot.qty * pivot.harga'))
-        ->orderByDesc('total_penjualan')
-        ->get();
+        ->get()
+        ->map(function ($barang) use ($startDate, $endDate) {
+            $details = $barang->detailPenjualans;
 
-        return view('reports.penjualanPerBarang', compact('laporan', 'startDate', 'endDate'));
+            // Filter by date if provided
+            if ($startDate && $endDate) {
+                $details = $details->filter(function ($detail) use ($startDate, $endDate) {
+                    $tanggal = $detail->penjualan->tanggal;
+                    return $tanggal >= $startDate && $tanggal <= $endDate;
+                });
+            }
+
+            return (object) [
+                'nama' => $barang->nama,
+                'total_qty' => $details->sum('jumlah'),
+                'total_penjualan' => $details->sum(function ($detail) {
+                    return $detail->jumlah * $detail->harga_satuan;
+                }),
+            ];
+        })
+        ->filter(function ($item) {
+            return $item->total_qty > 0;
+        })
+        ->sortByDesc('total_penjualan')
+        ->values();
+
+        return view('pages.admin.laporan.penjualanPerBarang', compact('laporan', 'startDate', 'endDate'));
     }
 
     /**
@@ -174,7 +190,7 @@ class ReportController extends Controller
         ->get();
 
 
-        return view('reports.penjualanPerCustomer', compact('laporan', 'startDate', 'endDate'));
+        return view('pages.admin.laporan.penjualanPerCustomer', compact('laporan', 'startDate', 'endDate'));
     }
 
 
@@ -188,31 +204,37 @@ class ReportController extends Controller
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         // if ($startDate != null && $endDate != null) {
-            $laporan = Barang::with(['penjualans' => function ($query) use ($startDate, $endDate) {
+            $laporan = Barang::with(['detailPenjualans' => function ($query) use ($startDate, $endDate) {
                 if ($startDate && $endDate) {
-                    $query->whereBetween('tanggal', [$startDate, $endDate]);
+                    $query->whereHas('penjualan', function ($q) use ($startDate, $endDate) {
+                        $q->whereBetween('tanggal', [$startDate, $endDate]);
+                    });
                 }
             }])
-            ->withSum(['penjualans as total_qty' => function ($query) use ($startDate, $endDate) {
-                if ($startDate && $endDate) {
-                    $query->whereBetween('tanggal', [$startDate, $endDate]);
-                }
-            }], 'pivot.qty')
-            ->withSum(['penjualans as total_penjualan' => function ($query) use ($startDate, $endDate) {
-                if ($startDate && $endDate) {
-                    $query->whereBetween('tanggal', [$startDate, $endDate]);
-                }
-            }], DB::raw('pivot.qty * pivot.harga'))
             ->get()
-            ->map(function ($item) {
+            ->map(function ($item) use ($startDate, $endDate) {
+                // Filter details by date if provided
+                $details = $item->detailPenjualans;
+
+                if ($startDate && $endDate) {
+                    $details = $details->filter(function ($detail) use ($startDate, $endDate) {
+                        $tanggal = $detail->penjualan->tanggal;
+                        return $tanggal >= $startDate && $tanggal <= $endDate;
+                    });
+                }
+
                 // Perhitungan profit per barang
-                $totalModal = $item->harga_modal * ($item->total_qty ?? 0);
-                $profit = ($item->total_penjualan ?? 0) - $totalModal;
+                $totalQty = $details->sum('jumlah');
+                $totalPenjualan = $details->sum(function ($detail) {
+                    return $detail->jumlah * $detail->harga_satuan;
+                });
+                $totalModal = $details->sum('total_modal');
+                $profit = $totalPenjualan - $totalModal;
 
                 return [
                     'nama' => $item->nama,
-                    'total_qty' => $item->total_qty ?? 0,
-                    'total_penjualan' => $item->total_penjualan ?? 0,
+                    'total_qty' => $totalQty,
+                    'total_penjualan' => $totalPenjualan,
                     'total_modal' => $totalModal,
                     'profit' => $profit,
                 ];

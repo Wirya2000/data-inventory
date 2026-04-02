@@ -76,7 +76,7 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Harga Jual</label>
-                                        <input class="form-control @error('harga_jual') is-invalid @enderror" id="harga_jual" name="harga_jual" type="number" placeholder="Harga Jual" required autofocus value="{{ old('harga_jual', $data->harga_jual) }}" >
+                                        <input class="form-control @error('harga_jual') is-invalid @enderror" id="harga_jual" name="harga_jual" type="text" placeholder="Harga Jual" required autofocus value="{{ old('harga_jual', $data->harga_jual) }}" >
                                     </div>
                                 </div>
                             </div>
@@ -90,3 +90,34 @@
         @include('layouts.footers.auth.footer')
     </div>
 @endsection
+
+@push('js')
+<script>
+    // Auto format harga dengan thousand separator
+    document.addEventListener('DOMContentLoaded', function() {
+        const hargaInput = document.getElementById('harga_jual');
+        if (hargaInput) {
+            hargaInput.addEventListener('input', function(e) {
+                // Hapus semua karakter yang bukan angka
+                let value = this.value.replace(/\D/g, '');
+
+                // Format dengan thousand separator
+                if (value) {
+                    value = parseInt(value, 10).toLocaleString('id-ID');
+                }
+
+                this.value = value;
+            });
+
+            // Saat form di-submit, parsing nilai untuk menghilangkan separator
+            const form = hargaInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    let nilai = hargaInput.value.replace(/\D/g, '');
+                    hargaInput.value = nilai;
+                });
+            }
+        }
+    });
+</script>
+@endpush

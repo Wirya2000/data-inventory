@@ -32,7 +32,7 @@
                         </div>
                         <label>Harga Barang</label>
                         <div class="input-group mb-3">
-                            <input type="number" class="form-control" placeholder="Harga Barang" aria-label="Harga Barang" aria-describedby="harga-addon" id="harga_barang" readonly>
+                            <input type="text" class="form-control" placeholder="Harga Barang" aria-label="Harga Barang" aria-describedby="harga-addon" id="harga_barang" readonly>
                         </div>
                         {{-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
@@ -60,6 +60,10 @@
 
 @push('js')
     <script>
-
+        // Helper function untuk format angka (Indonesian format: 1.000.000)
+        function formatCurrency(num) {
+            if (!num && num !== 0) return '0';
+            return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
     </script>
 @endpush
