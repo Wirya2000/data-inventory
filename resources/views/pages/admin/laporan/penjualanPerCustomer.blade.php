@@ -17,6 +17,17 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
+                                            <label for="customer_id">Pilih Customer</label>
+                                            <select id="customer_id" name="customer_id" class="form-control">
+                                                <option value="">-- Semua Customer --</option>
+                                                @foreach ($customers as $customer)
+                                                    <option value="{{ $customer->id }}" {{ $customerId == $customer->id ? 'selected' : '' }}>{{ $customer->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <label for="start_date">Tanggal Mulai</label>
                                             <input type="date" id="start_date" name="start_date"
                                                 class="form-control datepicker"
@@ -57,6 +68,13 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
+                                    <tfoot>
+                                        <tr style="font-weight: bold; background-color: #f6f9fc">
+                                            <td colspan="2" class="text-end">TOTAL</td>
+                                            <td>{{ $laporan->sum('total_transaksi') }}</td>
+                                            <td>{{ number_format($laporan->sum('total_pembelian'), 0, ',', '.') }}</td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>

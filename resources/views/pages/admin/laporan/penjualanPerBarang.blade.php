@@ -17,6 +17,17 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
+                                            <label for="barang_id">Pilih Barang</label>
+                                            <select id="barang_id" name="barang_id" class="form-control">
+                                                <option value="">-- Semua Barang --</option>
+                                                @foreach ($barangs as $barang)
+                                                    <option value="{{ $barang->id }}" {{ $barangId == $barang->id ? 'selected' : '' }}>{{ $barang->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <label for="start_date">Tanggal Mulai</label>
                                             <input type="date" id="start_date" name="start_date"
                                                 class="form-control datepicker"

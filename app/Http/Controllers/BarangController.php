@@ -59,7 +59,7 @@ class BarangController extends Controller
         $validatedData = $request->validate([
             'kode' => 'required|max:20',
             'nama' => 'required|max:255',
-            'satuan' => 'required|max:255',
+            'satuans_id' => 'required|max:255',
             // 'harga_beli' => 'required|numeric',
             'minimum_stock' => 'required|numeric',
             'harga_jual' => 'required|numeric',
@@ -145,9 +145,28 @@ class BarangController extends Controller
     }
 
     public function getKodeBarang(Request $request) {
-        $no_kode = str_pad(substr((Barang::where('kategoris_id',Kategori::find($$request->kategoris_id)->id)->latest()->first()->kode), -3)+1,3, '0', 0);
-        $kode_kategori = Kategori::first()->kode;
-        $kode = $kode_kategori . $no_kode;
-        return $kode;
+        try {
+            $kategoris_id = $request->kategoris_id;
+            $kategori = Kategori::find($kategoris_id);
+
+            if (!$kategori) {
+                return response()->json(['error' => 'Kategori tidak ditemukan'], 404);
+            }
+
+            $barangTerakhir = Barang::where('kategoris_id', $kategoris_id)->latest()->first();
+
+            if ($barangTerakhir) {
+                $lastKode = substr($barangTerakhir->kode, -3);
+                $no_kode = str_pad((int)$lastKode + 1, 3, '0', STR_PAD_LEFT);
+            } else {
+                $no_kode = '001';
+            }
+
+            $kode = $kategori->kode . $no_kode;
+
+            return response()->json(['kode' => $kode]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan'], 500);
+        }
     }
 }

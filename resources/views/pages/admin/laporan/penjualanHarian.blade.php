@@ -44,33 +44,35 @@
                                             <th class="text-uppercase text-xxs font-weight-bolder">Tanggal</th>
                                             <th class="text-uppercase text-xxs font-weight-bolder">Jumlah Transaksi</th>
                                             <th class="text-uppercase text-xxs font-weight-bolder">Total Barang Terjual</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Barang</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Jumlah</th>
-                                            <th class="text-uppercase text-xxs font-weight-bolder">Harga Satuan</th>
                                             <th class="text-uppercase text-xxs font-weight-bolder">Subtotal</th>
                                             <th class="text-uppercase text-xxs font-weight-bolder">Discount</th>
                                             <th class="text-uppercase text-xxs font-weight-bolder">Grand Total</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder">Rata-rata per Transaksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($laporan as $harian)
-                                            @foreach ($harian->penjualans as $penjualan)
-                                                @foreach ($penjualan->details as $detail)
-                                                    <tr>
-                                                        <td>{{ $penjualan->tanggal }}</td>
-                                                        <td>{{ $penjualan->id }}</td>
-                                                        <td>{{ $penjualan->customer->nama ?? $penjualan->nama_customer }}</td>
-                                                        <td>{{ $detail->barang->nama }}</td>
-                                                        <td>{{ $detail->jumlah }}</td>
-                                                        <td>{{ number_format($detail->harga_satuan, 0, ',', '.') }}</td>
-                                                        <td>{{ number_format($detail->jumlah * $detail->harga_satuan, 0, ',', '.') }}</td>
-                                                        <td>{{ number_format($penjualan->discount, 0, ',', '.') }}</td>
-                                                        <td>{{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            @endforeach
+                                            <tr>
+                                                <td>{{ $harian->tanggal }}</td>
+                                                <td>{{ $harian->jumlah_transaksi }}</td>
+                                                <td>{{ $harian->total_barang }}</td>
+                                                <td>{{ number_format($harian->total_subtotal, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($harian->total_diskon, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($harian->total_grand, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($harian->rata_rata_transaksi, 0, ',', '.') }}</td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
+                                    <tfoot>
+                                        <tr style="font-weight: bold; background-color: #f6f9fc">
+                                            <td colspan="2" class="text-end">TOTAL</td>
+                                            <td>{{ $laporan->sum('total_barang') }}</td>
+                                            <td>{{ number_format($laporan->sum('total_subtotal'), 0, ',', '.') }}</td>
+                                            <td>{{ number_format($laporan->sum('total_diskon'), 0, ',', '.') }}</td>
+                                            <td>{{ number_format($laporan->sum('total_grand'), 0, ',', '.') }}</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>

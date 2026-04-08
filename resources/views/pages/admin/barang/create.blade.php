@@ -42,7 +42,7 @@
                                         @error('kode')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="text" name="kode" placeholder="Kode" readonly value="{{ $kode }}">
+                                        <input id="kode" class="form-control" type="text" name="kode" placeholder="Kode" readonly value="{{ $kode }}">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -61,7 +61,7 @@
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         {{-- <input class="form-control" type="text" name="satuan" placeholder="Satuan" {{ old('satuan') }}> --}}
-                                        <select class="form-select" name="satuans_id" title="Satuan" onchange="getKodeBarang(this.value);">
+                                        <select class="form-select" name="satuans_id" title="Satuan">
                                             @foreach ($satuans as $satuan)
                                             @if (old('satuans_id') == $satuan->id)
                                                 <option value="{{ $satuan->id }}" selected>{{ $satuan->nama }}</option>
@@ -78,7 +78,7 @@
                                         @error('minimum_stock')
                                         <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input class="form-control" type="number" name="minimum_stock" placeholder="Harga Beli" value="{{ old('minimum_stock') }}">
+                                        <input class="form-control" type="number" name="minimum_stock" placeholder="Minimum Stock" value="{{ old('minimum_stock') }}">
                                     </div>
                                 </div>
                                 {{-- <div class="col-md-8">
@@ -134,15 +134,15 @@
             hargaInput.addEventListener('input', function(e) {
                 // Hapus semua karakter yang bukan angka
                 let value = this.value.replace(/\D/g, '');
-                
+
                 // Format dengan thousand separator
                 if (value) {
                     value = parseInt(value, 10).toLocaleString('id-ID');
                 }
-                
+
                 this.value = value;
             });
-            
+
             // Saat form di-submit, parsing nilai untuk menghilangkan separator
             const form = hargaInput.closest('form');
             if (form) {

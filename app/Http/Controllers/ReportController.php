@@ -18,20 +18,41 @@ class ReportController extends Controller
      */
     public function penjualanDetail(Request $request)
     {
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-        // if ($startDate != null && $endDate != null) {
-            $laporan = Penjualan::with([
-                    'details.barang',
-                    'customer:id,nama',
-                    'user:id,nama'
-                ])
-                ->whereBetween('tanggal', [$startDate, $endDate])
-                ->orderBy('tanggal', 'asc')
-                ->get();
-        // }
+        // Set default dates if not provided (current month)
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate = $request->end_date ?? now()->format('Y-m-d');
+        $barangId = $request->barang_id;
+        $customerId = $request->customer_id;
 
-        return view('pages.admin.laporan.penjualanDetail', compact('laporan', 'startDate', 'endDate'));
+        $query = Penjualan::with([
+                'details.barang',
+                'customer:id,nama',
+                'user:id,nama'
+            ])
+            ->whereBetween('tanggal', [$startDate, $endDate]);
+
+        if ($customerId) {
+            $query->where('customers_id', $customerId);
+        }
+
+        $laporan = $query->orderBy('tanggal', 'asc')->get();
+
+        // Filter by barang if selected
+        if ($barangId) {
+            $laporan = $laporan->map(function ($penjualan) use ($barangId) {
+                $penjualan->details = $penjualan->details->filter(function ($detail) use ($barangId) {
+                    return $detail->barangs_id == $barangId;
+                });
+                return $penjualan;
+            })->filter(function ($penjualan) {
+                return $penjualan->details->count() > 0;
+            })->values();
+        }
+
+        $barangs = Barang::orderBy('nama')->get();
+        $customers = Customer::orderBy('nama')->get();
+
+        return view('pages.admin.laporan.penjualanDetail', compact('laporan', 'barangs', 'customers', 'startDate', 'endDate', 'barangId', 'customerId'));
     }
 
     /**
@@ -41,12 +62,19 @@ class ReportController extends Controller
      */
     public function penjualanRekap(Request $request)
     {
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-        // if ($startDate != null && $endDate != null) {
-            $laporan = Penjualan::with(['customer', 'details'])
-            ->whereBetween('tanggal', [$startDate, $endDate])
-            ->select('id', 'tanggal', 'customers_id', 'discount', 'grand_total')
+        // Set default dates if not provided (current month)
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate = $request->end_date ?? now()->format('Y-m-d');
+        $customerId = $request->customer_id;
+
+        $query = Penjualan::with(['customer', 'details'])
+            ->whereBetween('tanggal', [$startDate, $endDate]);
+
+        if ($customerId) {
+            $query->where('customers_id', $customerId);
+        }
+
+        $laporan = $query->select('id', 'tanggal', 'customers_id', 'discount', 'grand_total')
             ->get()
             ->map(function ($penjualan) {
                 // hitung total item & subtotal per transaksi
@@ -65,9 +93,10 @@ class ReportController extends Controller
                     'grand_total'  => $penjualan->grand_total,
                 ];
             });
-        // }
 
-        return view('pages.admin.laporan.penjualanRekap', compact('laporan', 'startDate', 'endDate'));
+        $customers = Customer::orderBy('nama')->get();
+
+        return view('pages.admin.laporan.penjualanRekap', compact('laporan', 'customers', 'startDate', 'endDate', 'customerId'));
     }
 
     /**
@@ -77,10 +106,11 @@ class ReportController extends Controller
      */
     public function penjualanHarian(Request $request)
     {
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-        // if ($startDate != null && $endDate != null) {
-            $laporan = Penjualan::with('details')
+        // Set default dates if not provided (current month)
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate = $request->end_date ?? now()->format('Y-m-d');
+
+        $laporan = Penjualan::with('details')
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->get()
             ->groupBy('tanggal')
@@ -120,28 +150,31 @@ class ReportController extends Controller
      */
     public function penjualanPerBarang(Request $request)
     {
-        $startDate = $request->start_date;
-        $endDate   = $request->end_date;
+        // Set default dates if not provided (current month)
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate = $request->end_date ?? now()->format('Y-m-d');
+        $barangId  = $request->barang_id;
 
         // Jika belum ada filter tanggal, ambil semua
-        $laporan = Barang::with(['detailPenjualans' => function ($query) use ($startDate, $endDate) {
-            if ($startDate && $endDate) {
-                $query->whereHas('penjualan', function ($q) use ($startDate, $endDate) {
-                    $q->whereBetween('tanggal', [$startDate, $endDate]);
-                });
-            }
-        }])
-        ->get()
+        $query = Barang::with(['detailPenjualans' => function ($query) use ($startDate, $endDate) {
+            $query->whereHas('penjualan', function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('tanggal', [$startDate, $endDate]);
+            });
+        }]);
+
+        if ($barangId) {
+            $query->where('id', $barangId);
+        }
+
+        $laporan = $query->get()
         ->map(function ($barang) use ($startDate, $endDate) {
             $details = $barang->detailPenjualans;
 
             // Filter by date if provided
-            if ($startDate && $endDate) {
-                $details = $details->filter(function ($detail) use ($startDate, $endDate) {
-                    $tanggal = $detail->penjualan->tanggal;
-                    return $tanggal >= $startDate && $tanggal <= $endDate;
-                });
-            }
+            $details = $details->filter(function ($detail) use ($startDate, $endDate) {
+                $tanggal = $detail->penjualan->tanggal;
+                return $tanggal >= $startDate && $tanggal <= $endDate;
+            });
 
             return (object) [
                 'nama' => $barang->nama,
@@ -157,7 +190,9 @@ class ReportController extends Controller
         ->sortByDesc('total_penjualan')
         ->values();
 
-        return view('pages.admin.laporan.penjualanPerBarang', compact('laporan', 'startDate', 'endDate'));
+        $barangs = Barang::orderBy('nama')->get();
+
+        return view('pages.admin.laporan.penjualanPerBarang', compact('laporan', 'barangs', 'startDate', 'endDate', 'barangId'));
     }
 
     /**
@@ -167,30 +202,31 @@ class ReportController extends Controller
      */
     public function penjualanPerCustomer(Request $request)
     {
-        $startDate = $request->start_date;
-        $endDate   = $request->end_date;
+        // Set default dates if not provided (current month)
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate = $request->end_date ?? now()->format('Y-m-d');
+        $customerId = $request->customer_id;
 
         // Query total pembelian per customer
-        $laporan = Customer::with(['penjualans' => function ($query) use ($startDate, $endDate) {
-            if ($startDate && $endDate) {
-                $query->whereBetween('tanggal', [$startDate, $endDate]);
-            }
+        $query = Customer::with(['penjualans' => function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('tanggal', [$startDate, $endDate]);
         }])
         ->withSum(['penjualans as total_pembelian' => function ($query) use ($startDate, $endDate) {
-            if ($startDate && $endDate) {
-                $query->whereBetween('tanggal', [$startDate, $endDate]);
-            }
+            $query->whereBetween('tanggal', [$startDate, $endDate]);
         }], 'grand_total')
         ->withCount(['penjualans as total_transaksi' => function ($query) use ($startDate, $endDate) {
-            if ($startDate && $endDate) {
-                $query->whereBetween('tanggal', [$startDate, $endDate]);
-            }
-        }])
-        ->orderByDesc('total_pembelian')
-        ->get();
+            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        }]);
 
+        if ($customerId) {
+            $query->where('id', $customerId);
+        }
 
-        return view('pages.admin.laporan.penjualanPerCustomer', compact('laporan', 'startDate', 'endDate'));
+        $laporan = $query->orderByDesc('total_pembelian')->get();
+
+        $customers = Customer::orderBy('nama')->get();
+
+        return view('pages.admin.laporan.penjualanPerCustomer', compact('laporan', 'customers', 'startDate', 'endDate', 'customerId'));
     }
 
 
@@ -201,27 +237,30 @@ class ReportController extends Controller
      */
     public function penjualanProfitPenjualan(Request $request)
     {
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-        // if ($startDate != null && $endDate != null) {
-            $laporan = Barang::with(['detailPenjualans' => function ($query) use ($startDate, $endDate) {
-                if ($startDate && $endDate) {
-                    $query->whereHas('penjualan', function ($q) use ($startDate, $endDate) {
-                        $q->whereBetween('tanggal', [$startDate, $endDate]);
-                    });
-                }
-            }])
-            ->get()
+        // Set default dates if not provided (current month)
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate = $request->end_date ?? now()->format('Y-m-d');
+        $barangId = $request->barang_id;
+
+        $query = Barang::with(['detailPenjualans' => function ($query) use ($startDate, $endDate) {
+            $query->whereHas('penjualan', function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('tanggal', [$startDate, $endDate]);
+            });
+        }]);
+
+        if ($barangId) {
+            $query->where('id', $barangId);
+        }
+
+        $laporan = $query->get()
             ->map(function ($item) use ($startDate, $endDate) {
                 // Filter details by date if provided
                 $details = $item->detailPenjualans;
 
-                if ($startDate && $endDate) {
-                    $details = $details->filter(function ($detail) use ($startDate, $endDate) {
-                        $tanggal = $detail->penjualan->tanggal;
-                        return $tanggal >= $startDate && $tanggal <= $endDate;
-                    });
-                }
+                $details = $details->filter(function ($detail) use ($startDate, $endDate) {
+                    $tanggal = $detail->penjualan->tanggal;
+                    return $tanggal >= $startDate && $tanggal <= $endDate;
+                });
 
                 // Perhitungan profit per barang
                 $totalQty = $details->sum('jumlah');
@@ -239,10 +278,14 @@ class ReportController extends Controller
                     'profit' => $profit,
                 ];
             })
+            ->filter(function ($item) {
+                return $item['total_qty'] > 0;
+            })
             ->sortByDesc('profit')
             ->values();
-        // }
 
-        return view('pages.admin.laporan.penjualanProfitPenjualan', compact('laporan', 'startDate', 'endDate'));
+        $barangs = Barang::orderBy('nama')->get();
+
+        return view('pages.admin.laporan.penjualanProfitPenjualan', compact('laporan', 'barangs', 'startDate', 'endDate', 'barangId'));
     }
 }
