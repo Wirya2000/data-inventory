@@ -79,4 +79,3 @@
     });
 </script>
 @endpush
-@endsection
